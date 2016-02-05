@@ -50,4 +50,8 @@ public class NewsItem {
     public String getContent() {
         return content;
     }
+
+    public String getLink() {
+        return link;
+    }
 }

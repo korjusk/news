@@ -260,6 +260,17 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    int pos = (pageNr - 1) * 5 + position + 1;
+                    Intent goToImdb = new Intent(Intent.ACTION_VIEW);
+                    goToImdb.setData(Uri.parse(cupboard().withDatabase(db).get(NewsItem.class, pos).getLink()));
+                    startActivity(goToImdb);
+                    return true;
+                }
+            });
+
             return rootView;
         }
 
