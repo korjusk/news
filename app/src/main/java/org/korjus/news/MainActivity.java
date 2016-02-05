@@ -45,6 +45,7 @@ get page 2 rss*/
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 Main";
     private static final String URL = "https://www.reddit.com/r/worldnews/.rss";
+    public static long itemsInDb;
     public static SQLiteDatabase db;
     public static SQLiteDatabase dbOld;
     public static Context context;
@@ -320,7 +321,12 @@ public class MainActivity extends AppCompatActivity {
                 PlaceholderFragment fragment = (PlaceholderFragment) value;
                 fragment.updateUI();
             }
-
+            int newPageNr = (int) Math.ceil(itemsInDb / 5);
+            Log.d(TAG, "newPageNr " + String.valueOf(newPageNr));
+            // Change the count back to the initial count
+            mSectionsPagerAdapter.setCount(newPageNr);
+            // Triggers a redraw of the PageAdapter
+            mSectionsPagerAdapter.notifyDataSetChanged();
         }
     }
 
@@ -329,6 +335,8 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private int _count = 5;
+
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -341,10 +349,14 @@ public class MainActivity extends AppCompatActivity {
             return PlaceholderFragment.newInstance(position + 1);
         }
 
+        public void setCount(int count) {
+            this._count = count;
+        }
+
         @Override
         public int getCount() {
             // Show 5 total pages.
-            return 5;
+            return this._count;
         }
 
     }

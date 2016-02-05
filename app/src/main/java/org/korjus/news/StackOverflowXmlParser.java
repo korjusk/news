@@ -109,7 +109,7 @@ public class StackOverflowXmlParser {
         // Check if id is in seen DB.
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
         if(oldNews == null) {
-            cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+            MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
         }
         return new Entry(title, id, link);
     }
