@@ -44,12 +44,14 @@ get page 2 rss*/
 // cd data/data/org.korjus.news/databases
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 Main";
-    private static final String URL = "https://www.reddit.com/r/worldnews/.rss";
+    private static final String URL = "https://www.reddit.com/r/worldnews/new/.rss";
+    private static final String URL2 = "https://www.reddit.com/r/worldnews/new/.rss?limit=100";
     public static long itemsInDb;
     public static SQLiteDatabase db;
     public static SQLiteDatabase dbOld;
     public static Context context;
     public static Map m1 = new HashMap();
+    static long startTime;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -70,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -111,8 +117,9 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
+        startTime = System.nanoTime();
         // Download and parse data from URL
-        new DownloadXmlTask().execute(URL);
+        new DownloadXmlTask().execute(URL2);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -125,16 +132,20 @@ public class MainActivity extends AppCompatActivity {
                 db.close();
                 deleteDatabase(DatabaseHelper.DATABASE_NAME);
 
+                itemsInDb = 1l;
+
                 // Start Main Activity
                 Intent goToHome = new Intent(context, MainActivity.class);
                 startActivity(goToHome);
             }
         });
+
+
     }
 
     // Uploads XML from reddit, parses it, and combines it with
     // HTML markup. Returns HTML string.
-    private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
+    private void loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
         InputStream stream = null;
         StackOverflowXmlParser stackOverflowXmlParser = new StackOverflowXmlParser();
 
@@ -149,7 +160,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        return "wtf";
     }
 
     // Given a string representation of a URL, sets up a connection and gets
@@ -189,6 +199,8 @@ public class MainActivity extends AppCompatActivity {
             // Close and delete Database so It could be recreated
             db.close();
             deleteDatabase(DatabaseHelper.DATABASE_NAME);
+
+            itemsInDb = 1l;
 
             // Start Main Activity
             Intent goToHome = new Intent(context, MainActivity.class);
@@ -296,6 +308,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 }
             }
+            //long endTime = System.nanoTime();
+            //long duration = (endTime - startTime) / 1000000;
+            //Log.d(TAG, "u8itime " + String.valueOf(duration));
             itemsAdapter.notifyDataSetChanged();
         }
 
@@ -307,12 +322,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... urls) {
             try {
-                return loadXmlFromNetwork(urls[0]);
+                loadXmlFromNetwork(urls[0]);
             } catch (IOException e) {
-                return "error";
+                e.getStackTrace();
             } catch (XmlPullParserException e) {
-                return "error";
+                e.getStackTrace();
             }
+            return null;
         }
 
         @Override
@@ -321,7 +337,8 @@ public class MainActivity extends AppCompatActivity {
                 PlaceholderFragment fragment = (PlaceholderFragment) value;
                 fragment.updateUI();
             }
-            int newPageNr = (int) Math.ceil(itemsInDb / 5);
+            int newPageNr = (int) Math.ceil(itemsInDb / 5.0);
+            Log.d(TAG, "newPageNr " + String.valueOf(Math.ceil(itemsInDb / 5.0)));
             Log.d(TAG, "newPageNr " + String.valueOf(newPageNr));
             // Change the count back to the initial count
             mSectionsPagerAdapter.setCount(newPageNr);
@@ -335,7 +352,7 @@ public class MainActivity extends AppCompatActivity {
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private int _count = 5;
+        private int _count = 1;
 
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -355,7 +372,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 5 total pages.
             return this._count;
         }
 

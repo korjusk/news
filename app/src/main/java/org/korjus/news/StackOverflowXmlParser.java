@@ -1,6 +1,7 @@
 package org.korjus.news;
 
 
+import android.util.Log;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -9,13 +10,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 // Todo remove class Entry
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /**
  * This class parses RSS feeds from reddit.
@@ -28,20 +27,20 @@ public class StackOverflowXmlParser {
 
 
 
-    public List<Entry> parse(InputStream in) throws XmlPullParserException, IOException {
+    public void parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return readFeed(parser);
+            readFeed(parser);
         } finally {
             in.close();
         }
     }
 
-    private List<Entry> readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<Entry> entries = new ArrayList<>();
+    private void readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+
 
         parser.require(XmlPullParser.START_TAG, ns, "feed");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -51,32 +50,18 @@ public class StackOverflowXmlParser {
             String name = parser.getName();
             // Starts by looking for the entry tag
             if (name.equals("entry")) {
-                entries.add(readEntry(parser));
+                readEntry(parser);
             } else {
                 skip(parser);
             }
         }
-        return entries;
     }
 
-    // This class represents a single entry (post) in the XML feed.
-    // It includes the data members "title," "link," and "summary."
-    public static class Entry {
-        public final String title;
-        public final String link;
-        public final String summary;
-
-        private Entry(String title, String summary, String link) {
-            this.title = title;
-            this.summary = summary;
-            this.link = link;
-        }
-    }
 
     // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them
     // off
     // to their respective &quot;read&quot; methods for processing. Otherwise, skips the tag.
-    private Entry readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private void readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "entry");
         String title = null;
         String id = null;
@@ -111,7 +96,7 @@ public class StackOverflowXmlParser {
         if(oldNews == null) {
             MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
         }
-        return new Entry(title, id, link);
+        Log.d(TAG, "items in db: " + MainActivity.itemsInDb);
     }
 
     // Processes title tags in the feed.
