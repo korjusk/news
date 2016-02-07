@@ -20,9 +20,23 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
  * Given an InputStream representation of a feed, it returns a List of entries,
  * where each list element represents a single entry (post) in the RSS feed.
  */
-public class StackOverflowXmlParser {
+public class RssParser {
     private static final String TAG = "u8i9 Stack";
     private static final String ns = null;
+
+    // Finds all URLs from String and returns only the second URL
+    public static String extractLink(String text) {
+        Matcher m = Patterns.WEB_URL.matcher(text);
+        int queue = 1;
+        while (m.find()) {
+            String url = m.group();
+            if (queue == 2) {
+                return url;
+            }
+            queue++;
+        }
+        return "Error at extracting second url";
+    }
 
     public void parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -54,7 +68,6 @@ public class StackOverflowXmlParser {
         }
     }
 
-
     // Parses the contents of an entry. If it encounters a title, summary, or link tag, hands them
     // off
     // to their respective &quot;read&quot; methods for processing. Otherwise, skips the tag.
@@ -70,18 +83,25 @@ public class StackOverflowXmlParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("title")) {
-                title = readTitle(parser);
-            } else if (name.equals("id")) {
-                id = readId(parser);
-            } else if (name.equals("link")) {
-                link = readLink(parser);
-            } else if (name.equals("published")) {
-                published = readPublished(parser);
-            } else if (name.equals("content")) {
-                content = readContent(parser);
-            } else {
-                skip(parser);
+            switch (name) {
+                case "title":
+                    title = readTitle(parser);
+                    break;
+                case "id":
+                    id = readId(parser);
+                    break;
+                case "link":
+                    link = readLink(parser);
+                    break;
+                case "published":
+                    published = readPublished(parser);
+                    break;
+                case "content":
+                    content = readContent(parser);
+                    break;
+                default:
+                    skip(parser);
+                    break;
             }
         }
 
@@ -89,11 +109,11 @@ public class StackOverflowXmlParser {
 
         // Check if id is in old DB.
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
-        if(oldNews == null) {
+        if (oldNews == null) {
 
             // Its not in old db but check if its in new db
             NewsItem newsItem = cupboard().withDatabase(MainActivity.db).query(NewsItem.class).withSelection("id = ?", id).get();
-            if(newsItem == null) {
+            if (newsItem == null) {
                 // Add data to new db.
                 MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
             } else {
@@ -101,7 +121,7 @@ public class StackOverflowXmlParser {
             }
         }
 
-        MainActivity.lastId = id;
+        MainActivity.lastItemId = id;
     }
 
     // Processes title tags in the feed.
@@ -178,19 +198,5 @@ public class StackOverflowXmlParser {
                     break;
             }
         }
-    }
-
-    // Finds all URLs from String and returns only the second URL
-    public static String extractLink(String text) {
-        Matcher m = Patterns.WEB_URL.matcher(text);
-        int queue = 1;
-        while (m.find()) {
-            String url = m.group();
-            if (queue == 2){
-                return url;
-            }
-            queue++;
-        }
-        return "Error at extracting second url";
     }
 }

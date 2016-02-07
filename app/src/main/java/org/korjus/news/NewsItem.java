@@ -6,7 +6,7 @@ public class NewsItem {
     private static final String TAG = "u8i9 NewsItem";
     String content; // direct link
     String id;
-    String link;
+    String commentsLink;
     String published; // later change to date
     String title;
     public Long _id; // for cupboard
@@ -19,10 +19,10 @@ public class NewsItem {
     public NewsItem() { // for cupboard
     }
 
-    public NewsItem(String content, String id, String link, String published, String title) {
+    public NewsItem(String content, String id, String commentsLink, String published, String title) {
         this.content = content;
         this.id = id;
-        this.link = link;
+        this.commentsLink = commentsLink;
         this.published = published;
         this.title = title;
 
@@ -33,7 +33,7 @@ public class NewsItem {
         return "NewsItem{" +
                 "content='" + content + '\'' +
                 ", id='" + id + '\'' +
-                ", link='" + link + '\'' +
+                ", commentsLink='" + commentsLink + '\'' +
                 ", published='" + published + '\'' +
                 ", title='" + title + '\'' +
                 '}';
@@ -51,7 +51,7 @@ public class NewsItem {
         return content;
     }
 
-    public String getLink() {
-        return link;
+    public String getCommentsLink() {
+        return commentsLink;
     }
 }
