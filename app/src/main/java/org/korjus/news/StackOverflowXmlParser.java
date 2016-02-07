@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-// Todo remove class Entry
 
 /**
  * This class parses RSS feeds from reddit.
@@ -24,8 +23,6 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class StackOverflowXmlParser {
     private static final String TAG = "u8i9 Stack";
     private static final String ns = null;
-
-
 
     public void parse(InputStream in) throws XmlPullParserException, IOException {
         try {
@@ -88,15 +85,23 @@ public class StackOverflowXmlParser {
             }
         }
 
-        // Add data to database
-        // If its unseen data
+        // Add data to database if its not in any database
 
-        // Check if id is in seen DB.
+        // Check if id is in old DB.
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
         if(oldNews == null) {
-            MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+
+            // Its not in old db but check if its in new db
+            NewsItem newsItem = cupboard().withDatabase(MainActivity.db).query(NewsItem.class).withSelection("id = ?", id).get();
+            if(newsItem == null) {
+                // Add data to new db.
+                MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+            } else {
+                Log.d(TAG, "ei ole old db`s kuid on uues db`s. ID: " + id);
+            }
         }
-        Log.d(TAG, "items in db: " + MainActivity.itemsInDb);
+
+        MainActivity.lastId = id;
     }
 
     // Processes title tags in the feed.
