@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +17,18 @@ import java.util.ArrayList;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 
+
 public class PlaceholderFragment extends Fragment {
     private static final String TAG = "u8i9 Fragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
     ArrayAdapter<String> itemsAdapter;
     ArrayList<String> dataList;
     int pageNr;
+    SwipeRefreshLayout swipeContainer;
+    MainActivity mainActivity;
 
     public PlaceholderFragment() {
     }
-
 
     // Returns a new instance of this fragment for the given section number.
     public static PlaceholderFragment newInstance(int sectionNumber) {
@@ -38,6 +40,11 @@ public class PlaceholderFragment extends Fragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mainActivity = (MainActivity) MainActivity.context;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,9 +52,16 @@ public class PlaceholderFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         pageNr = getArguments().getInt(ARG_SECTION_NUMBER);
 
-        dataList = new ArrayList<>();
-
         // Add 5 news items to dataList if they are available
+        addDataToDatalist();
+        instantiateListview(rootView);
+        pullToRefresh(rootView);
+
+        return rootView;
+    }
+
+    private void addDataToDatalist() {
+        dataList = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
             int e = (pageNr - 1) * 5 + i;
 
@@ -58,9 +72,10 @@ public class PlaceholderFragment extends Fragment {
                 break;
             }
         }
+    }
 
+    private void instantiateListview(View rootView){
         itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
-
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,8 +100,28 @@ public class PlaceholderFragment extends Fragment {
                 return true;
             }
         });
-        Log.d(TAG, "Fragment onCreateView end, Items in DB: " + String.valueOf(MainActivity.itemsInDb) + " In OLD DB: " + String.valueOf(MainActivity.itemsInDbOld));
-        return rootView;
+        //Log.d(TAG, "Fragment onCreateView end, Items in DB: " + String.valueOf(MainActivity.itemsInDb) + " In OLD DB: " + String.valueOf(MainActivity.itemsInDbOld));
+
+    }
+
+    private void pullToRefresh(View rootView){
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                mainActivity.refresh();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
     public void updateUI() {
@@ -105,14 +140,13 @@ public class PlaceholderFragment extends Fragment {
                     // If this fragment is first page fragment then add all the news that`s
                     // inserted to dataList also to db OLD.
                     MainActivity.itemsInDbOld = cupboard().withDatabase(MainActivity.dbOld).put(new OldNews(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId()));
-                    Log.d(TAG, "Fragment updateUI, adding to old db " + String.valueOf(i) + "    ID: " +
-                            cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId() + " items in Old DB: " + String.valueOf(MainActivity.itemsInDbOld));
+                    // Log.d(TAG, "Fragment updateUI, adding to old db " + String.valueOf(i) + "    ID: " + cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId() + " items in Old DB: " + String.valueOf(MainActivity.itemsInDbOld));
                 }
             } else {
                 break;
             }
         }
         itemsAdapter.notifyDataSetChanged();
-        Log.d(TAG, "Fragment updated, Items in DB: " + String.valueOf(MainActivity.itemsInDb) + " In OLD DB: " + String.valueOf(MainActivity.itemsInDbOld));
+        // Log.d(TAG, "Fragment updated, Items in DB: " + String.valueOf(MainActivity.itemsInDb) + " In OLD DB: " + String.valueOf(MainActivity.itemsInDbOld));
     }
 }

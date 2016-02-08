@@ -38,7 +38,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Change the pager adapter nr of page count
         int newPageNr = (int) Math.ceil(MainActivity.itemsInDb / 5.0);
-        Log.d(TAG, "newPageNr " + String.valueOf(newPageNr));
         MainActivity.SectionsAdapter.setCount(newPageNr);
 
         // Triggers a redraw of the PageAdapter
@@ -46,9 +45,14 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Download more data if there's below 25 news in db
         if(MainActivity.itemsInDb < 25){
-            //String URL3 = URL + "&count=25&after=" + lastItemId;
-            String URL3 = MainActivity.URL + "?count=25&after=" + MainActivity.lastItemId;
-            new DownloadTask().execute(URL3);
+            String url = Url.getUrl();
+            String newUrl;
+            if(url.contains("?")){
+                newUrl = url + "&count=25&after=" + MainActivity.lastItemId;
+            } else {
+                newUrl = url + "?count=25&after=" + MainActivity.lastItemId;
+            }
+            new DownloadTask().execute(newUrl);
         }
     }
 
@@ -69,7 +73,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
                 stream.close();
             }
         }
-
     }
 
     // Given a string representation of a URL, sets up a connection and gets

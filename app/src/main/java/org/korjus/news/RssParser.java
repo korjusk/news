@@ -1,7 +1,5 @@
 package org.korjus.news;
 
-
-import android.util.Log;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -14,12 +12,7 @@ import java.util.regex.Matcher;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
-
-/**
- * This class parses RSS feeds from reddit.
- * Given an InputStream representation of a feed, it returns a List of entries,
- * where each list element represents a single entry (post) in the RSS feed.
- */
+// This class parses RSS feeds from reddit.
 public class RssParser {
     private static final String TAG = "u8i9 Stack";
     private static final String ns = null;
@@ -51,8 +44,6 @@ public class RssParser {
     }
 
     private void readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
-
-
         parser.require(XmlPullParser.START_TAG, ns, "feed");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -104,23 +95,13 @@ public class RssParser {
                     break;
             }
         }
-
         // Add data to database if its not in any database
 
         // Check if id is in old DB.
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
         if (oldNews == null) {
-
-            // Its not in old db but check if its in new db
-            NewsItem newsItem = cupboard().withDatabase(MainActivity.db).query(NewsItem.class).withSelection("id = ?", id).get();
-            if (newsItem == null) {
-                // Add data to new db.
-                MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
-            } else {
-                Log.d(TAG, "ei ole old db`s kuid on uues db`s. ID: " + id);
-            }
+            MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
         }
-
         MainActivity.lastItemId = id;
     }
 
