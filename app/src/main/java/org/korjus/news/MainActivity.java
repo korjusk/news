@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         loadSettings();
         instantiateSpinner();
         instantiateViewPagerWithAdapters();
-        instantiateDatabases();
+        restartDatabases();
 
         // Download and parse data from urlCustom
         new DownloadTask().execute(Url.getUrl());
@@ -151,9 +151,12 @@ public class MainActivity extends AppCompatActivity {
                     // News location in db
                     int e = page * 5 + i;
 
-                    // Convert news to old news and add that to old news db
-                    OldNews oldNews = new OldNews(cupboard().withDatabase(db).get(NewsItem.class, e).getId());
-                    DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
+                    NewsItem newsItem = cupboard().withDatabase(db).get(NewsItem.class, e);
+                    if (null != newsItem) {
+                        // Convert news to blocked news and add that to old news db
+                        OldNews oldNews = new OldNews(newsItem.getId());
+                        DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
+                    }
                 }
             }
 
@@ -163,21 +166,23 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void instantiateDatabases(){
+    private void restartDatabases(){
+        if (null != db){
+            // Close and delete Database so It could be recreated
+            db.close();
+            deleteDatabase(DatabaseHelper.DATABASE_NAME);
+        }
+
         DatabaseBlockedHelper dbHelperOld = new DatabaseBlockedHelper(this);
         DatabaseHelper dbHelper = new DatabaseHelper(this);
 
         dbOld = dbHelperOld.getWritableDatabase();
         db = dbHelper.getWritableDatabase();
+
+        DatabaseHelper.itemsInDb = 1l;
     }
 
     public void refresh() {
-        // Close and delete Database so It could be recreated
-        db.close();
-        deleteDatabase(DatabaseHelper.DATABASE_NAME);
-
-        DatabaseHelper.itemsInDb = 1l;
-
         // Start new Main Activity
         Intent goToHome = new Intent(context, MainActivity.class);
         startActivity(goToHome);
