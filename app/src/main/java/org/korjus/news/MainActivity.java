@@ -31,9 +31,7 @@ public static -> private
 crashlytics
 check for updates in settings
 change url in settings
-remove floating action button
 spinner arrow style
-avoid past hour loop
 
 */
 

@@ -2,6 +2,7 @@ package org.korjus.news;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -13,12 +14,14 @@ import java.net.URL;
 // Implementation of AsyncTask used to download XML feed from reddit
 public class DownloadTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "u8i9 DownloadTask";
+    String lastUrl;
 
 
     @Override
     protected String doInBackground(String... urls) {
         try {
-            Log.d(TAG, "AsyncTask Background: " + (urls[0]));
+            lastUrl = (urls[0]);
+            Log.d(TAG, "AsyncTask Background: " + lastUrl);
             loadXmlFromNetwork(urls[0]);
         } catch (IOException e) {
             e.getStackTrace();
@@ -52,7 +55,16 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             } else {
                 newUrl = url + "?count=25&after=" + MainActivity.lastItemId;
             }
-            new DownloadTask().execute(newUrl);
+
+            // download more data if the url is new
+            if (newUrl.equals(lastUrl)){
+                Log.d(TAG, "Escaped loop");
+                if (MainActivity.itemsInDb < 5) {
+                    Toast.makeText(MainActivity.context, "No more new news...", Toast.LENGTH_LONG).show();
+                }
+            } else {
+                new DownloadTask().execute(newUrl);
+            }
         }
     }
 
