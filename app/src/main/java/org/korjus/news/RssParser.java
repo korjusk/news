@@ -100,7 +100,7 @@ public class RssParser {
         // Check if id is in old DB.
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
         if (oldNews == null) {
-            MainActivity.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+            DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
         }
         MainActivity.lastItemId = id;
     }

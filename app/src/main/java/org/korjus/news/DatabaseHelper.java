@@ -12,6 +12,7 @@ class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TAG = "u8i9 DatabaseHelper";
     public static final String DATABASE_NAME = "news.db";
     private static final int DATABASE_VERSION = 1;
+    public static long itemsInDb;
 
     static {
         // Register our models

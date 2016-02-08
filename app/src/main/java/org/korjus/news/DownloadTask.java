@@ -33,6 +33,8 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        long items = DatabaseHelper.itemsInDb;
+
         // Update all fragments that are created
         for (Object value : MainActivity.m1.values()) {
             PlaceholderFragment fragment = (PlaceholderFragment) value;
@@ -40,14 +42,16 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         }
 
         // Change the pager adapter nr of page count
-        int newPageNr = (int) Math.ceil(MainActivity.itemsInDb / 5.0);
+        int newPageNr = (int) Math.ceil(items / 5.0);
         MainActivity.SectionsAdapter.setCount(newPageNr);
 
         // Triggers a redraw of the PageAdapter
         MainActivity.SectionsAdapter.notifyDataSetChanged();
 
+        Log.d(TAG, "Items in Db: " + String.valueOf(DatabaseHelper.itemsInDb) + " Blocked items: " + String.valueOf(DatabaseBlockedHelper.itemsInDb));
+
         // Download more data if there's below 25 news in db
-        if(MainActivity.itemsInDb < 25){
+        if(items < 25){
             String url = Url.getUrl();
             String newUrl;
             if(url.contains("?")){
@@ -59,7 +63,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             // download more data if the url is new
             if (newUrl.equals(lastUrl)){
                 Log.d(TAG, "Escaped loop");
-                if (MainActivity.itemsInDb < 5) {
+                if (items < 5) {
                     Toast.makeText(MainActivity.context, "No more new news...", Toast.LENGTH_LONG).show();
                 }
             } else {

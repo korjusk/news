@@ -139,7 +139,7 @@ public class PlaceholderFragment extends Fragment {
                 if (pageNr == 1) {
                     // If this fragment is first page fragment then add all the news that`s
                     // inserted to dataList also to db OLD.
-                    MainActivity.itemsInDbOld = cupboard().withDatabase(MainActivity.dbOld).put(new OldNews(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId()));
+                    DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(MainActivity.dbOld).put(new OldNews(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId()));
                     // Log.d(TAG, "Fragment updateUI, adding to old db " + String.valueOf(i) + "    ID: " + cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId() + " items in Old DB: " + String.valueOf(MainActivity.itemsInDbOld));
                 }
             } else {

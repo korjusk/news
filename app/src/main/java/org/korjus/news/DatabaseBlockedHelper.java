@@ -8,17 +8,18 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 // Uses Cupboard to handle SQLite database
 // Documentation: https://bitbucket.org/littlerobots/cupboard/wiki/Home
-class DatabaseHelperOld extends SQLiteOpenHelper {
+class DatabaseBlockedHelper extends SQLiteOpenHelper {
     private static final String TAG = "u8i9 DatabaseOld";
-    public static final String DATABASE_NAME = "oldNews.db";
+    public static final String DATABASE_NAME = "blockedNews.db";
     private static final int DATABASE_VERSION = 1;
+    public static long itemsInDb;
 
     static {
         // Register our models
         cupboard().register(OldNews.class);
     }
 
-    public DatabaseHelperOld(Context context) {
+    public DatabaseBlockedHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

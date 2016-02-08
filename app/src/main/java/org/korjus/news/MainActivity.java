@@ -21,26 +21,29 @@ import java.util.Map;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
-rename somethings
-clean code
-comment
 oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
+
+rename
+clean code
+comment
 public static -> private
+
 crashlytics
 check for updates in settings
+
 change url in settings
 spinner arrow style
+support for older versions
 
+cd data/data/org.korjus.news/databases
 */
 
-// cd data/data/org.korjus.news/databases
+
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
     public static int spinnerPos;
-    public static long itemsInDb;
-    public static long itemsInDbOld;
     public static SQLiteDatabase db;
     public static SQLiteDatabase dbOld;
     public static Context context;
@@ -66,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Download and parse data from urlCustom
         new DownloadTask().execute(Url.getUrl());
-        //Log.d(TAG, "MainActivity onCreate end, items in DB: " + String.valueOf(itemsInDb) + " In OLD DB: " + String.valueOf(itemsInDbOld));
     }
 
     @Override
@@ -86,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
             dbOld.close();
             db.close();
 
-            deleteDatabase(DatabaseHelperOld.DATABASE_NAME);
+            deleteDatabase(DatabaseBlockedHelper.DATABASE_NAME);
             deleteDatabase(DatabaseHelper.DATABASE_NAME);
 
-            itemsInDbOld = 0l;
-            itemsInDb = 1l;
+            DatabaseBlockedHelper.itemsInDb = 0l;
+            DatabaseHelper.itemsInDb = 1l;
 
             // Start Main Activity
             Intent goToHome = new Intent(context, MainActivity.class);
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Convert news to old news and add that to old news db
                     OldNews oldNews = new OldNews(cupboard().withDatabase(db).get(NewsItem.class, e).getId());
-                    itemsInDbOld = cupboard().withDatabase(dbOld).put(oldNews);
+                    DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
                 }
             }
 
@@ -162,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void instantiateDatabases(){
-        DatabaseHelperOld dbHelperOld = new DatabaseHelperOld(this);
+        DatabaseBlockedHelper dbHelperOld = new DatabaseBlockedHelper(this);
         DatabaseHelper dbHelper = new DatabaseHelper(this);
 
         dbOld = dbHelperOld.getWritableDatabase();
@@ -174,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
         db.close();
         deleteDatabase(DatabaseHelper.DATABASE_NAME);
 
-        itemsInDb = 1l;
+        DatabaseHelper.itemsInDb = 1l;
 
         // Start new Main Activity
         Intent goToHome = new Intent(context, MainActivity.class);
