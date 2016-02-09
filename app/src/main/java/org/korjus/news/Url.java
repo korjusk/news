@@ -1,6 +1,6 @@
 package org.korjus.news;
 
-import android.content.SharedPreferences;
+import android.util.Log;
 
 public class Url {
     private static final String TAG = "u8i9 Url";
@@ -28,31 +28,34 @@ public class Url {
                 urlTemp += "year";
                 break;
             case 6:
-                urlTemp += "all"; // todo change to since
+                Clock clock = new Clock();
+                long dif = clock.getDifferenceMinus3hours();
+                urlTemp = getSinceUrl(dif);
+                UserSettings settings = new UserSettings();
+                settings.setDifference(dif);
                 break;
         }
-
-        MainActivity mainActivity = (MainActivity) MainActivity.context;
-
-        SharedPreferences settings = mainActivity.getSharedPreferences("settings", 0);
-        SharedPreferences.Editor editor = settings.edit();
-
-        editor.putString("urlCustom", urlTemp);
-        editor.putInt("spinnerPos", pos);
-        editor.apply();
-
-        if(pos != MainActivity.spinnerPos){
-            mainActivity.refresh();
-        }
-
-        mainActivity.loadSettings();
-
         return urlTemp;
     }
 
-    public static String getUrl() {
-        MainActivity mainActivity = (MainActivity) MainActivity.context;
-        SharedPreferences settings = mainActivity.getSharedPreferences("settings", 0);
-        return settings.getString("urlCustom", base);
+
+    public static String getSinceUrl(Long dif) {
+        String urlTemp = "https://www.reddit.com/r/worldnews/top/.rss?sort=top&t=";
+
+        long minutes = dif / 60;
+
+        if (minutes<60){
+            urlTemp += "hour";
+        } else if (minutes<60*24){
+            urlTemp += "day";
+        } else if (minutes<60*24*7){
+            urlTemp += "week";
+        } else {
+            urlTemp += "month";
+        }
+
+        Log.d(TAG, String.valueOf(minutes) + " was difference in minutes and returning url: " + urlTemp);
+        return urlTemp;
     }
+
 }

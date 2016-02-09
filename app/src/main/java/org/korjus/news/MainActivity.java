@@ -2,7 +2,6 @@ package org.korjus.news;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,9 +21,11 @@ import java.util.Map;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
+correct toast message
 oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
+change last hour to new?
 
 rename
 clean code
@@ -36,6 +38,7 @@ check for updates in settings
 change url in settings
 spinner arrow style
 support for older versions
+support for other timezones
 
 cd data/data/org.korjus.news/databases
 */
@@ -43,13 +46,13 @@ cd data/data/org.korjus.news/databases
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
-    public static int spinnerPos;
     public static SQLiteDatabase db;
     public static SQLiteDatabase dbOld;
     public static Context context;
     public static Map m1 = new HashMap();
     public static String lastItemId;
     public static SectionsPagerAdapter SectionsAdapter;
+    private UserSettings settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +64,18 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         context = this;
+        settings = new UserSettings();
 
-        loadSettings();
         instantiateSpinner();
         instantiateViewPagerWithAdapters();
         restartDatabases();
 
         // Download and parse data from urlCustom
-        new DownloadTask().execute(Url.getUrl());
+        new DownloadTask().execute(settings.getCustomUrl());
+
+        if (settings.getSpinnerPosition() == 6) {
+            Toast.makeText(this, "Showing news from last " + String.valueOf(settings.getDifference() / 60 / 60) + " hours.", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -94,19 +101,10 @@ public class MainActivity extends AppCompatActivity {
             DatabaseBlockedHelper.itemsInDb = 0l;
             DatabaseHelper.itemsInDb = 1l;
 
-            // Start Main Activity
-            Intent goToHome = new Intent(context, MainActivity.class);
-            startActivity(goToHome);
+            refresh();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    public void loadSettings() {
-        SharedPreferences settings = getSharedPreferences("settings", 0);
-
-        spinnerPos = settings.getInt("spinnerPos", 0);
     }
 
     private void instantiateSpinner() {
@@ -118,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        spinner.setSelection(spinnerPos);
+        spinner.setSelection(settings.getSpinnerPosition(), false);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Url.getUrl(position);
+                settings.setSpinnerPosition(position);
+                settings.setCustomUrl(position);
+                refresh();
             }
 
             @Override

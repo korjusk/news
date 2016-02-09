@@ -114,6 +114,10 @@ public class PlaceholderFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
+                UserSettings settings = new UserSettings();
+                if (settings.getSpinnerPosition() == 6){
+                    settings.setCustomUrlWithDif();
+                }
                 mainActivity.refresh();
             }
         });

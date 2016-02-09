@@ -19,9 +19,10 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... urls) {
+        lastUrl = (urls[0]);
+        Log.d(TAG, "AsyncTask Background: " + lastUrl);
+
         try {
-            lastUrl = (urls[0]);
-            Log.d(TAG, "AsyncTask Background: " + lastUrl);
             loadXmlFromNetwork(urls[0]);
         } catch (IOException e) {
             e.getStackTrace();
@@ -52,7 +53,9 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
         // Download more data if there's below 25 news in db
         if(items < 25){
-            String url = Url.getUrl();
+            UserSettings settings = new UserSettings();
+            String url = settings.getCustomUrl();
+
             String newUrl;
             if(url.contains("?")){
                 newUrl = url + "&count=25&after=" + MainActivity.lastItemId;

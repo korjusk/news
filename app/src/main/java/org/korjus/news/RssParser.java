@@ -1,5 +1,6 @@
 package org.korjus.news;
 
+import android.util.Log;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -8,14 +9,17 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.regex.Matcher;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 // This class parses RSS feeds from reddit.
 public class RssParser {
-    private static final String TAG = "u8i9 Stack";
+    private static final String TAG = "u8i9 RssParser";
     private static final String ns = null;
+    private Date date;
+    private boolean sinceLastVisit;
 
     // Finds all URLs from String and returns only the second URL
     public static String extractLink(String text) {
@@ -32,6 +36,7 @@ public class RssParser {
     }
 
     public void parse(InputStream in) throws XmlPullParserException, IOException {
+        loadSettings();
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -95,13 +100,38 @@ public class RssParser {
                     break;
             }
         }
-        // Add data to database if its not in any database
 
-        // Check if id is in old DB.
+        // Returns null when there is no entry in the "db Old" with oldId matching "id"
         OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
+
+        // true means its new news and it will be added to db
         if (oldNews == null) {
-            DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+
+            // Check if sort order is set to "since last visit"
+            if (sinceLastVisit) {
+                Clock clock = new Clock();
+                // Current news item published time
+                Date item = clock.getDateFromString(published);
+
+                // Its acceptable when news item are published after date(Time when user last visited the app)
+                boolean acceptable = item.after(date);
+
+                Log.d(TAG, "published: " + item + " Date:    " + date + " Acceptable: " + String.valueOf(acceptable));
+
+                // Add news item to db only if they are acceptable
+                if (acceptable){
+                    Log.d(TAG, "Adding data to db.");
+                    DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+                } else {
+                    Log.d(TAG, "old news");
+                }
+
+            } else { // Sort order is not set to "since last visit". Add data to db.
+                DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+            }
+
         }
+        // Last news item Id. It is used to get next page url.
         MainActivity.lastItemId = id;
     }
 
@@ -178,6 +208,29 @@ public class RssParser {
                     depth++;
                     break;
             }
+        }
+    }
+
+
+
+    private void loadSettings(){
+        Clock clock = new Clock();
+        UserSettings settings = new UserSettings();
+
+        if (settings.getSpinnerPosition() == 6) {
+            sinceLastVisit = true;
+            date = clock.getDateFromSettings();
+
+            // save date if difference is over 5 seconds // todo change to 30m
+            if (clock.getDifferenceMinus3hours() > 60) {
+                // todo dont save it in the middle of downloading new data
+                clock.setCurrentMillisMinus3hours();
+            }
+
+            Log.d(TAG, date.toString() + " Spinner pos: " + String.valueOf(settings.getSpinnerPosition()) + " Since last visit: " + String.valueOf(sinceLastVisit) + " difference: " + String.valueOf(clock.getDifferenceMinus3hours()));
+        } else {
+            sinceLastVisit = false;
+            Log.d(TAG, "sinceLastVisit = false");
         }
     }
 }
