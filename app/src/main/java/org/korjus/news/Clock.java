@@ -1,7 +1,5 @@
 package org.korjus.news;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -17,7 +15,7 @@ public class Clock {
 
     public long getCurrentMillis() {
         Date c = new Date();
-        Log.d(TAG, "getCurrentMillis " + c.getTime() + " time: " + c);
+        //Log.d(TAG, "getCurrentMillis " + c.getTime() + " time: " + c);
         return c.getTime();
     }
 

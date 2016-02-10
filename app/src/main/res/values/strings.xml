@@ -5,9 +5,9 @@
 
 
     <string-array name="order">
-        <item>Hot News</item>
-        <item>News from past hour</item>
-        <item>News from past 24 hours</item>
+        <item>News - hot and fresh</item>
+        <item>News - newest first</item>
+        <item>News from past day</item>
         <item>News from past week</item>
         <item>News from past month</item>
         <item>News from past year</item>

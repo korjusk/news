@@ -13,7 +13,7 @@ public class Url {
                 urlTemp = base;
                 break;
             case 1:
-                urlTemp += "hour";
+                urlTemp = "https://www.reddit.com/r/worldnews/new/.rss";
                 break;
             case 2:
                 urlTemp += "day";
@@ -29,8 +29,8 @@ public class Url {
                 break;
             case 6:
                 Clock clock = new Clock();
-                long dif = (clock.getDifferenceMillis() / 1000);
-                Log.d(TAG, "dif is: " + dif);
+                long dif = (clock.getDifferenceMillis());
+                //Log.d(TAG, "dif is: " + dif);
                 urlTemp = getSinceUrl(dif);
                 break;
         }
@@ -41,7 +41,7 @@ public class Url {
     public static String getSinceUrl(Long dif) {
         String urlTemp = "https://www.reddit.com/r/worldnews/top/.rss?sort=top&t=";
 
-        long minutes = dif / 60;
+        long minutes = dif / 60000;
 
         if (minutes<60){
             urlTemp += "hour";
@@ -53,7 +53,7 @@ public class Url {
             urlTemp += "month";
         }
 
-        Log.d(TAG, String.valueOf(minutes) + " was difference in minutes and returning url: " + urlTemp);
+        Log.d(TAG, String.valueOf(minutes) + " was difference in minutes.");
         return urlTemp;
     }
 

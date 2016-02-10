@@ -91,7 +91,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             Log.d(TAG, "diffSec is: " + String.valueOf(diffSec));
             // save date if difference is over x seconds // todo change to 30m
             if (diffSec > 60) {
-                Log.d(TAG, "saving LastVisitDate");
                 settings.setLastVisitDate();
             }
         }

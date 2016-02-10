@@ -23,6 +23,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
 correct toast message
+since last time change to since last session time
 oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
@@ -106,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
 
             DatabaseBlockedHelper.itemsInDb = 0l;
             DatabaseHelper.itemsInDb = 1l;
+
+            UserSettings settings = new UserSettings();
+            settings.deleteAll();
 
             refresh();
             return true;

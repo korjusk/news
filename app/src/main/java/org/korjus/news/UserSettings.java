@@ -15,10 +15,15 @@ public class UserSettings {
         settings = mainActivity.getSharedPreferences("settings", 0);
     }
 
+    public void deleteAll() {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.clear();
+        editor.apply();
+    }
 
     public Date getDate() {
         Date date = new Date(settings.getLong("date", 0));
-        Log.d(TAG, "get Date From Settings: " + date);
+        //Log.d(TAG, "get Date From Settings: " + date);
         return date;
     }
 
@@ -56,7 +61,7 @@ public class UserSettings {
         Clock clock = new Clock();
 
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMillis()/1000));
+        editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMillis()));
         editor.apply();
     }
 

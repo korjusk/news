@@ -1,6 +1,5 @@
 package org.korjus.news;
 
-import android.util.Log;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -114,7 +113,7 @@ public class RssParser {
                 Date item = clock.getDateFromString(published);
 
                 long diffMinutes = clock.getDifferenceMillis() / 60000;
-                Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
+                //Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
 
                 Date current = new Date(listVisitDate.getTime() - 7200000); // todo minus 2h timezone
 
@@ -122,7 +121,7 @@ public class RssParser {
                 // OR if difference is 60minutes or smaller. if its below 1 hour then all the past hour news will be acceptable
                 boolean acceptable = item.after(current) || diffMinutes <= 60;
 
-                Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
+                //Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
 
                 // Add news item to db only if they are acceptable
                 if (acceptable){
@@ -224,7 +223,7 @@ public class RssParser {
             sinceLastVisit = true;
             listVisitDate = settings.getDate();
 
-            Log.d(TAG, "Settings:: " + settings.toString());
+            //Log.d(TAG, "Settings:: " + settings.toString());
             } else {
             sinceLastVisit = false;
         }
