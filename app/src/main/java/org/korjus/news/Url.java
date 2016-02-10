@@ -29,11 +29,9 @@ public class Url {
                 break;
             case 6:
                 Clock clock = new Clock();
-                long dif = clock.getDifferenceMinus3hours();
-                Log.d(TAG, "dif was: " + dif);
+                long dif = (clock.getDifferenceMillis() / 1000);
+                Log.d(TAG, "dif is: " + dif);
                 urlTemp = getSinceUrl(dif);
-                UserSettings settings = new UserSettings();
-                settings.setDifference(dif);
                 break;
         }
         return urlTemp;

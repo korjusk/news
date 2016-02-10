@@ -18,7 +18,7 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class RssParser {
     private static final String TAG = "u8i9 RssParser";
     private static final String ns = null;
-    private Date date;
+    private Date listVisitDate;
     private boolean sinceLastVisit;
 
     // Finds all URLs from String and returns only the second URL
@@ -89,7 +89,7 @@ public class RssParser {
                 case "link":
                     link = readLink(parser);
                     break;
-                case "published":
+                case "updated":
                     published = readPublished(parser);
                     break;
                 case "content":
@@ -113,10 +113,16 @@ public class RssParser {
                 // Current news item published time
                 Date item = clock.getDateFromString(published);
 
-                // Its acceptable when news item are published after date(Time when user last visited the app)
-                boolean acceptable = item.after(date);
+                long diffMinutes = clock.getDifferenceMillis() / 60000;
+                Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
 
-                Log.d(TAG, "published: " + item + " Date:    " + date + " Acceptable: " + String.valueOf(acceptable));
+                Date current = new Date(listVisitDate.getTime() - 7200000); // todo minus 2h timezone
+
+                // Its acceptable when news item are published after listVisitDate(Time when user last visited the app)
+                // OR if difference is 60minutes or smaller. if its below 1 hour then all the past hour news will be acceptable
+                boolean acceptable = item.after(current) || diffMinutes <= 60;
+
+                Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
 
                 // Add news item to db only if they are acceptable
                 if (acceptable){
@@ -164,9 +170,9 @@ public class RssParser {
 
     // Processes published tags in the feed.
     private String readPublished(XmlPullParser parser) throws IOException, XmlPullParserException {
-        parser.require(XmlPullParser.START_TAG, ns, "published");
+        parser.require(XmlPullParser.START_TAG, ns, "updated");
         String published = readText(parser);
-        parser.require(XmlPullParser.END_TAG, ns, "published");
+        parser.require(XmlPullParser.END_TAG, ns, "updated");
         return published;
     }
 
@@ -212,16 +218,14 @@ public class RssParser {
 
 
     private void loadSettings(){
-        Clock clock = new Clock();
         UserSettings settings = new UserSettings();
 
         if (settings.getSpinnerPosition() == 6) {
             sinceLastVisit = true;
-            date = clock.getDateFromSettings();
+            listVisitDate = settings.getDate();
 
-            Log.d(TAG, "Settings: " + settings.toString());
-            Log.d(TAG, date.toString() + " Spinner pos: " + String.valueOf(settings.getSpinnerPosition()) + " Since last visit: " + String.valueOf(sinceLastVisit) + " difference: " + String.valueOf(clock.getDifferenceMinus3hours()));
-        } else {
+            Log.d(TAG, "Settings:: " + settings.toString());
+            } else {
             sinceLastVisit = false;
         }
     }

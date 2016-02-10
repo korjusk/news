@@ -6,7 +6,7 @@ import android.util.Log;
 import java.util.Date;
 
 public class UserSettings {
-    private static final String TAG = "u8i9 Settings";
+    private static final String TAG = "u8i9 UserSettings";
     MainActivity mainActivity;
     SharedPreferences settings;
 
@@ -18,7 +18,7 @@ public class UserSettings {
 
     public Date getDate() {
         Date date = new Date(settings.getLong("date", 0));
-        Log.d(TAG, "getDateFromSettings: " + date);
+        Log.d(TAG, "get Date From Settings: " + date);
         return date;
     }
 
@@ -31,17 +31,13 @@ public class UserSettings {
         return settings.getString("urlCustom", base);
     }
 
-    public long getDifference() {
-        return settings.getLong("dif", 0);
-    }
-
-    public void setDate(long millis) {
+    public void setLastVisitDate() {
+        Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong("date", millis);
+        editor.putLong("date", clock.getCurrentMillis());
         editor.apply();
 
-        Date date = new Date(millis);
-        Log.d(TAG, "Date saved to settings: " + date);
+        Log.d(TAG, "Date saved to settings.");
     }
 
     public void setSpinnerPosition(int i) {
@@ -60,13 +56,7 @@ public class UserSettings {
         Clock clock = new Clock();
 
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMinus3hours()));
-        editor.apply();
-    }
-
-    public void setDifference(long dif) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putLong("dif", dif);
+        editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMillis()/1000));
         editor.apply();
     }
 

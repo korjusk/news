@@ -17,42 +17,29 @@ public class Clock {
 
     public long getCurrentMillis() {
         Date c = new Date();
-        Log.d(TAG,"getCurrentMillis " + c.toString());
+        Log.d(TAG, "getCurrentMillis " + c.getTime() + " time: " + c);
         return c.getTime();
     }
 
-
-    public Date getDateFromSettings() {
-        return settings.getDate();
-    }
-
-    public long getDifferenceMinus3hours() { // in seconds minus time zone 2 hours
-        long difference = (getCurrentMillis() - getDateFromSettings().getTime()) / 1000 - 7200;
+    public long getDifferenceMillis() {
+        long difference = (getCurrentMillis() - settings.getDate().getTime());
         return difference;
     }
 
-    public long getDifference() { // in seconds
-        long difference = (getCurrentMillis() - getDateFromSettings().getTime()) / 1000;
-        return difference;
-    }
-
-    public Date getDateFromString(String raw){
-        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd-HH:mm:ss");
+    public Date getDateFromString(String raw) {
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
         Date date = new Date();
 
         try {
             // raw = 2016-02-08T22:39:57+00:00
-            String dateString = raw.replace("T","-");
+            String dateString = raw.replace("T", "-");
             // date = 2016-02-08-22:39:57+00:00
             date = ft.parse(dateString);
         } catch (Exception e) {
             e.getStackTrace();
         }
+
         return date;
     }
 
-    public void setCurrentMillisMinus3hours() {
-        settings.setDate(getCurrentMillis() - 10800000);
-        // todo minus timezone only
-    }
 }

@@ -73,12 +73,15 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG, "Settings are: " + settings.toString());
 
+        if (settings.getSpinnerPosition() == 6) {
+            Clock clock = new Clock();
+            Toast.makeText(this, "Showing news from last " + String.valueOf(clock.getDifferenceMillis() / 1000 / 60) + " minutes.", Toast.LENGTH_LONG).show();
+        }
+
         // Download and parse data from urlCustom
         new DownloadTask().execute(settings.getCustomUrl());
 
-        if (settings.getSpinnerPosition() == 6) {
-            Toast.makeText(this, "Showing news from last " + String.valueOf(settings.getDifference() / 60 / 60) + " hours.", Toast.LENGTH_LONG).show();
-        }
+
     }
 
     @Override
@@ -123,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "instantiateSpinner on item selected, pos: " + String.valueOf(position));
                 settings.setSpinnerPosition(position);
                 settings.setCustomUrl(position);
                 refresh();

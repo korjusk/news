@@ -116,6 +116,7 @@ public class PlaceholderFragment extends Fragment {
                 // once the network request has completed successfully.
                 UserSettings settings = new UserSettings();
                 if (settings.getSpinnerPosition() == 6){
+                    //settings.setCustomUrl(6);
                     settings.setCustomUrlWithDif();
                 }
                 mainActivity.refresh();
