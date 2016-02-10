@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
             DatabaseBlockedHelper.itemsInDb = 0l;
             DatabaseHelper.itemsInDb = 1l;
 
+            lastItemId = null;
+
             UserSettings settings = new UserSettings();
             settings.deleteAll();
 
