@@ -120,10 +120,8 @@ public class RssParser {
 
                 // Add news item to db only if they are acceptable
                 if (acceptable){
-                    Log.d(TAG, "Adding data to db.");
                     DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
                 } else {
-                    Log.d(TAG, "old news");
                 }
 
             } else { // Sort order is not set to "since last visit". Add data to db.
@@ -221,16 +219,10 @@ public class RssParser {
             sinceLastVisit = true;
             date = clock.getDateFromSettings();
 
-            // save date if difference is over 5 seconds // todo change to 30m
-            if (clock.getDifferenceMinus3hours() > 60) {
-                // todo dont save it in the middle of downloading new data
-                clock.setCurrentMillisMinus3hours();
-            }
-
+            Log.d(TAG, "Settings: " + settings.toString());
             Log.d(TAG, date.toString() + " Spinner pos: " + String.valueOf(settings.getSpinnerPosition()) + " Since last visit: " + String.valueOf(sinceLastVisit) + " difference: " + String.valueOf(clock.getDifferenceMinus3hours()));
         } else {
             sinceLastVisit = false;
-            Log.d(TAG, "sinceLastVisit = false");
         }
     }
 }

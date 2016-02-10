@@ -17,7 +17,9 @@ public class UserSettings {
 
 
     public Date getDate() {
-        return new Date(settings.getLong("date", 0));
+        Date date = new Date(settings.getLong("date", 0));
+        Log.d(TAG, "getDateFromSettings: " + date);
+        return date;
     }
 
     public int getSpinnerPosition() {
@@ -37,7 +39,9 @@ public class UserSettings {
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("date", millis);
         editor.apply();
-        Log.d(TAG, "Date saved to settings.");
+
+        Date date = new Date(millis);
+        Log.d(TAG, "Date saved to settings: " + date);
     }
 
     public void setSpinnerPosition(int i) {
@@ -64,5 +68,10 @@ public class UserSettings {
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("dif", dif);
         editor.apply();
+    }
+
+    @Override
+    public String toString() {
+        return settings.getAll().toString();
     }
 }

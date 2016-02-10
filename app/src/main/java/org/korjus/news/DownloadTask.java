@@ -72,6 +72,21 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             } else {
                 new DownloadTask().execute(newUrl);
             }
+        } else {
+            UserSettings settings = new UserSettings();
+
+
+            // try to save new url and date to settings
+            if (settings.getSpinnerPosition() == 6) {
+                Clock clock = new Clock();
+
+                Log.d(TAG, "Diff is: " + String.valueOf(clock.getDifferenceMinus3hours()));
+                // save date if difference is over x seconds // todo change to 30m
+                if (clock.getDifferenceMinus3hours() > 60) {
+                    clock.setCurrentMillisMinus3hours();
+                    settings.setCustomUrl(6);
+                }
+            }
         }
     }
 

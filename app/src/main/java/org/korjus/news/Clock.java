@@ -1,5 +1,7 @@
 package org.korjus.news;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -15,6 +17,7 @@ public class Clock {
 
     public long getCurrentMillis() {
         Date c = new Date();
+        Log.d(TAG,"getCurrentMillis " + c.toString());
         return c.getTime();
     }
 
@@ -23,8 +26,8 @@ public class Clock {
         return settings.getDate();
     }
 
-    public long getDifferenceMinus3hours() { // in seconds
-        long difference = (getCurrentMillis() - getDateFromSettings().getTime()) / 1000 - 10800;
+    public long getDifferenceMinus3hours() { // in seconds minus time zone 2 hours
+        long difference = (getCurrentMillis() - getDateFromSettings().getTime()) / 1000 - 7200;
         return difference;
     }
 
@@ -50,5 +53,6 @@ public class Clock {
 
     public void setCurrentMillisMinus3hours() {
         settings.setDate(getCurrentMillis() - 10800000);
+        // todo minus timezone only
     }
 }
