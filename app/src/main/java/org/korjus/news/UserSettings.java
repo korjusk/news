@@ -21,7 +21,7 @@ public class UserSettings {
         editor.apply();
     }
 
-    public Date getDate() {
+    public Date getLastVisitDate() {
         Date date = new Date(settings.getLong("date", 0));
         //Log.d(TAG, "get Date From Settings: " + date);
         return date;
@@ -36,13 +36,30 @@ public class UserSettings {
         return settings.getString("urlCustom", base);
     }
 
+    public boolean getIsFirstVisit() {
+        return settings.getBoolean("isFirstVisit", true);
+    }
+
+    public long getSessionStartTime() {
+        return settings.getLong("session", 0l);
+    }
+
     public void setLastVisitDate() {
         Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("date", clock.getCurrentMillis());
         editor.apply();
 
-        Log.d(TAG, "Date saved to settings.");
+        Log.d(TAG, "last visit date saved to settings.");
+    }
+
+    public void setSessionStartTime() {
+        Clock clock = new Clock();
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong("session", clock.getCurrentMillis());
+        editor.apply();
+
+        Log.d(TAG, "Session start time saved to settings.");
     }
 
     public void setSpinnerPosition(int i) {
@@ -62,6 +79,12 @@ public class UserSettings {
 
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMillis()));
+        editor.apply();
+    }
+
+    public void setIsFirstVisit() {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("isFirstVisit", false);
         editor.apply();
     }
 

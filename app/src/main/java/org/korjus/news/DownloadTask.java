@@ -66,7 +66,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             // download more data if the url is new
             if (newUrl.equals(lastUrl)){
                 Log.d(TAG, "Escaped loop");
-                saveLastVisitDate();
+                //saveLastVisitDate();
 
                 if (items < 5) {
                     Toast.makeText(MainActivity.context, "No more new news...", Toast.LENGTH_LONG).show();
@@ -75,24 +75,27 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
                 new DownloadTask().execute(newUrl);
             }
         } else {
-            saveLastVisitDate();
+            //saveLastVisitDate();
         }
     }
 
     private void saveLastVisitDate() {
         UserSettings settings = new UserSettings();
 
-        // try to save new url and date to settings
+/*        // try to save new url and date to settings
         if (settings.getSpinnerPosition() == 6) {  // temp
 
             Clock clock = new Clock();
 
-            long diffSec = (clock.getDifferenceMillis() / 1000);
-            Log.d(TAG, "diffSec is: " + String.valueOf(diffSec));
-            // save date if difference is over x seconds // todo change to 30m
-            if (diffSec > 60) {
+            if (clock.getIsNewSession()) {
+                Log.d(TAG, "diffMinutes > 20");
                 settings.setLastVisitDate();
             }
+        }
+
+        */
+        if (MainActivity.shouldSave) {
+            //settings.setLastVisitDate();
         }
     }
 

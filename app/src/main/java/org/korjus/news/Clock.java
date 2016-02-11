@@ -1,5 +1,7 @@
 package org.korjus.news;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -20,7 +22,7 @@ public class Clock {
     }
 
     public long getDifferenceMillis() {
-        long difference = (getCurrentMillis() - settings.getDate().getTime());
+        long difference = (getCurrentMillis() - settings.getLastVisitDate().getTime());
         return difference;
     }
 
@@ -58,6 +60,20 @@ public class Clock {
         } else {
             return base + "long time ago.\nShowing last month news.";
         }
+    }
+
+    public long getDiffSinceSessionStart() {
+        long start = settings.getSessionStartTime();
+        long current = getCurrentMillis();
+        Log.d(TAG, "current - start = " + String.valueOf(current - start));
+        return current - start;
+    }
+
+    public boolean getIsNewSession() {
+        //boolean IsNewSession = getDiffSinceSessionStart() > 1200000; // todo
+        boolean IsNewSession = getDiffSinceSessionStart() > 120000;
+        Log.d(TAG, "IsNewSession: " + String.valueOf(IsNewSession));
+        return IsNewSession;
     }
 
 }

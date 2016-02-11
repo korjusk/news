@@ -3,7 +3,10 @@ package org.korjus.news;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,11 +25,9 @@ import java.util.Map;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
-since last time change to since last session time
 oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
-change last hour to new?
 
 rename
 clean code
@@ -34,7 +35,6 @@ comment
 public static -> private
 
 crashlytics
-check for updates in settings
 
 change url in settings
 spinner arrow style
@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity {
     public static Map m1 = new HashMap();
     public static String lastItemId;
     public static SectionsPagerAdapter SectionsAdapter;
+    public static boolean shouldSave;
     private UserSettings settings;
+    private Clock clock;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
         context = this;
         settings = new UserSettings();
+        clock = new Clock();
 
         instantiateSpinner();
         instantiateViewPagerWithAdapters();
         restartDatabases();
+        sessionInfo();
 
         Log.d(TAG, "Settings are: " + settings.toString());
 
@@ -80,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
 
         // Download and parse data from urlCustom
         new DownloadTask().execute(settings.getCustomUrl());
-
-
     }
 
     @Override
@@ -115,6 +118,17 @@ public class MainActivity extends AppCompatActivity {
             refresh();
             return true;
         }
+
+        if (id == R.id.menu_update) {
+            // User can manually check if there is updates in dropbox folder
+            // This will be removed when the app becomes available in play store
+            String updateUrl =
+                    "https://www.dropbox.com/sh/6afaza65f37mlze/AADXVimhKAZDzw7d9Fc_QTuXa?dl=0";
+            Intent checkUpdates = new Intent(Intent.ACTION_VIEW);
+            checkUpdates.setData(Uri.parse(updateUrl));
+            startActivity(checkUpdates);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -192,6 +206,45 @@ public class MainActivity extends AppCompatActivity {
         db = dbHelper.getWritableDatabase();
 
         DatabaseHelper.itemsInDb = 1l;
+    }
+
+    private void sessionInfo() {
+        // check if its new session
+        if (clock.getIsNewSession())  {
+            // save new session start time
+            settings.setSessionStartTime();
+
+            // check if its first visit
+            if(settings.getIsFirstVisit()){
+                Log.d(TAG, "first visit");
+                instructions();
+                // set first visit to false
+                settings.setIsFirstVisit();
+            } else {
+                Log.d(TAG, "shouldSave");
+                shouldSave = true;
+
+                if (settings.getSpinnerPosition() == 6){
+                    settings.setCustomUrl(6);
+                }
+
+                settings.setLastVisitDate();
+            }
+        }
+    }
+
+    public void instructions() {
+       CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.main_content);
+        String msg = "Swipe left to see more news \nPull down to refresh";
+
+        final Snackbar snackBar = Snackbar.make(layout, msg, Snackbar.LENGTH_INDEFINITE);
+        snackBar.setAction("Got it", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackBar.dismiss();
+            }
+        });
+        snackBar.show();
     }
 
     public void refresh() {

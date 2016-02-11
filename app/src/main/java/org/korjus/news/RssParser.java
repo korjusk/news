@@ -221,7 +221,7 @@ public class RssParser {
 
         if (settings.getSpinnerPosition() == 6) {
             sinceLastVisit = true;
-            listVisitDate = settings.getDate();
+            listVisitDate = settings.getLastVisitDate();
 
             //Log.d(TAG, "Settings:: " + settings.toString());
             } else {

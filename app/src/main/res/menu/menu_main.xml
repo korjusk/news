@@ -4,7 +4,13 @@
     tools:context="org.korjus.news.MainActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:orderInCategory="1"
         android:title="restart"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_update"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="Check for updates" />
 </menu>
