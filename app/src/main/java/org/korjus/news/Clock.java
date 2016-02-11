@@ -40,4 +40,24 @@ public class Clock {
         return date;
     }
 
+    public String getStringFromMillis(long millis){
+        String base = "Last visit was ";
+        String end = "ago.";
+
+        int minutes = 60000;
+        int hour = 3600000;
+        int day = 86400000;
+        int week = 604800000;
+
+        if(millis < hour) {
+            return base + String.valueOf(millis / minutes) + " minutes ago.\nShowing last hour news.";
+        } else if (millis < day) {
+            return base + String.valueOf(millis / hour) + " hours " + end;
+        } else if (millis < 30 * day) {
+            return base + String.valueOf(millis / day) + " days " + end;
+        } else {
+            return base + "long time ago.\nShowing last month news.";
+        }
+    }
+
 }

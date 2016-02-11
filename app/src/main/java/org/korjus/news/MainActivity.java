@@ -22,7 +22,6 @@ import java.util.Map;
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
-correct toast message
 since last time change to since last session time
 oldDb has duplicated values
 adding items to db is too slow
@@ -76,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (settings.getSpinnerPosition() == 6) {
             Clock clock = new Clock();
-            Toast.makeText(this, "Showing news from last " + String.valueOf(clock.getDifferenceMillis() / 1000 / 60) + " minutes.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, clock.getStringFromMillis(clock.getDifferenceMillis()), Toast.LENGTH_LONG).show();
         }
 
         // Download and parse data from urlCustom
