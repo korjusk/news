@@ -3,7 +3,6 @@ package org.korjus.news;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -19,8 +18,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.util.HashMap;
 import java.util.Map;
+
+import io.fabric.sdk.android.Fabric;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
@@ -34,11 +37,10 @@ clean code
 comment
 public static -> private
 
-crashlytics
-
 spinner arrow style
 support for older versions
 support for other timezones
+icon
 
 cd data/data/org.korjus.news/databases
 */
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -118,13 +121,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.menu_update) {
+            // todo remove
+            throw new RuntimeException("This is a crash");
+
+/*
             // User can manually check if there is updates in dropbox folder
             // This will be removed when the app becomes available in play store
             String updateUrl =
                     "https://www.dropbox.com/sh/6afaza65f37mlze/AADXVimhKAZDzw7d9Fc_QTuXa?dl=0";
             Intent checkUpdates = new Intent(Intent.ACTION_VIEW);
             checkUpdates.setData(Uri.parse(updateUrl));
-            startActivity(checkUpdates);
+            startActivity(checkUpdates);*/
         }
 
         return super.onOptionsItemSelected(item);
