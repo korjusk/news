@@ -15,30 +15,34 @@ public class Clock {
         settings = new UserSettings();
     }
 
-    public long getCurrentMillis() {
+    public long getCurrentTimeMillis() {
         Date c = new Date();
-        //Log.d(TAG, "getCurrentMillis " + c.getTime() + " time: " + c);
         return c.getTime();
     }
 
-    public long getDifferenceMillis() {
-        long difference = (getCurrentMillis() - settings.getLastVisitDate().getTime());
+    public long getLastSessionDifferenceMillis() {
+        long difference = (getCurrentTimeMillis() - settings.getLastSessionTime().getTime());
         return difference;
     }
 
-    public Date getDateFromString(String raw) {
+    public long getLastDownloadDifferenceMillis() {
+        long start = settings.getLastDownloadTime();
+        long current = getCurrentTimeMillis();
+        return current - start;
+    }
+
+    public Date getTimeFromString(String raw) {
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
         Date date = new Date();
 
         try {
             // raw = 2016-02-08T22:39:57+00:00
             String dateString = raw.replace("T", "-");
-            // date = 2016-02-08-22:39:57+00:00
+            // dateString = 2016-02-08-22:39:57+00:00
             date = ft.parse(dateString);
         } catch (Exception e) {
             e.getStackTrace();
         }
-
         return date;
     }
 
@@ -49,31 +53,23 @@ public class Clock {
         int minutes = 60000;
         int hour = 3600000;
         int day = 86400000;
-        int week = 604800000;
+        long month = 2629746000l;
 
         if(millis < hour) {
             return base + String.valueOf(millis / minutes) + " minutes ago.\nShowing last hour news.";
         } else if (millis < day) {
             return base + String.valueOf(millis / hour) + " hours " + end;
-        } else if (millis < 30 * day) {
+        } else if (millis < month) {
             return base + String.valueOf(millis / day) + " days " + end;
         } else {
             return base + "long time ago.\nShowing last month news.";
         }
     }
 
-    public long getDiffSinceSessionStart() {
-        long start = settings.getSessionStartTime();
-        long current = getCurrentMillis();
-        Log.d(TAG, "current - start = " + String.valueOf(current - start));
-        return current - start;
-    }
-
+    // Returns true if last download was more than 20 minutes ago
     public boolean getIsNewSession() {
-        //boolean IsNewSession = getDiffSinceSessionStart() > 1200000; // todo
-        boolean IsNewSession = getDiffSinceSessionStart() > 120000;
-        Log.d(TAG, "IsNewSession: " + String.valueOf(IsNewSession));
+        boolean IsNewSession = getLastDownloadDifferenceMillis() > 1200000; // 20 minutes
+        Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
         return IsNewSession;
     }
-
 }

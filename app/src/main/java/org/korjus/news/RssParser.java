@@ -110,9 +110,9 @@ public class RssParser {
             if (sinceLastVisit) {
                 Clock clock = new Clock();
                 // Current news item published time
-                Date item = clock.getDateFromString(published);
+                Date item = clock.getTimeFromString(published);
 
-                long diffMinutes = clock.getDifferenceMillis() / 60000;
+                long diffMinutes = clock.getLastSessionDifferenceMillis() / 60000;
                 //Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
 
                 Date current = new Date(listVisitDate.getTime() - 7200000); // todo minus 2h timezone
@@ -221,9 +221,8 @@ public class RssParser {
 
         if (settings.getSpinnerPosition() == 6) {
             sinceLastVisit = true;
-            listVisitDate = settings.getLastVisitDate();
+            listVisitDate = settings.getLastSessionTime();
 
-            //Log.d(TAG, "Settings:: " + settings.toString());
             } else {
             sinceLastVisit = false;
         }

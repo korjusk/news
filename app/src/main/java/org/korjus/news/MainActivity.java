@@ -36,7 +36,6 @@ public static -> private
 
 crashlytics
 
-change url in settings
 spinner arrow style
 support for older versions
 support for other timezones
@@ -76,11 +75,10 @@ public class MainActivity extends AppCompatActivity {
         restartDatabases();
         sessionInfo();
 
-        Log.d(TAG, "Settings are: " + settings.toString());
-
         if (settings.getSpinnerPosition() == 6) {
-            Clock clock = new Clock();
-            Toast.makeText(this, clock.getStringFromMillis(clock.getDifferenceMillis()), Toast.LENGTH_LONG).show();
+            settings.setCustomUrl(6);
+
+            Toast.makeText(this, clock.getStringFromMillis(clock.getLastSessionDifferenceMillis()), Toast.LENGTH_LONG).show();
         }
 
         // Download and parse data from urlCustom
@@ -209,28 +207,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sessionInfo() {
-        // check if its new session
         if (clock.getIsNewSession())  {
-            // save new session start time
-            settings.setSessionStartTime();
 
-            // check if its first visit
+            // Previous session start time
+            settings.setLastSessionTime();
+
+            settings.setCurrentSessionStartTime();
+
             if(settings.getIsFirstVisit()){
-                Log.d(TAG, "first visit");
+                Log.d(TAG, "It is first visit!");
                 instructions();
-                // set first visit to false
-                settings.setIsFirstVisit();
-            } else {
-                Log.d(TAG, "shouldSave");
-                shouldSave = true;
 
-                if (settings.getSpinnerPosition() == 6){
-                    settings.setCustomUrl(6);
-                }
-
-                settings.setLastVisitDate();
+                settings.setIsFirstVisitToFalse();
             }
         }
+
+        settings.setLastDownloadTime();
     }
 
     public void instructions() {

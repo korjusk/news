@@ -1,7 +1,5 @@
 package org.korjus.news;
 
-import android.util.Log;
-
 public class Url {
     private static final String TAG = "u8i9 Url";
     private static String base = "https://www.reddit.com/r/worldnews/.rss";
@@ -29,8 +27,7 @@ public class Url {
                 break;
             case 6:
                 Clock clock = new Clock();
-                long dif = (clock.getDifferenceMillis());
-                //Log.d(TAG, "dif is: " + dif);
+                long dif = (clock.getLastSessionDifferenceMillis());
                 urlTemp = getSinceUrl(dif);
                 break;
         }
@@ -53,7 +50,6 @@ public class Url {
             urlTemp += "month";
         }
 
-        Log.d(TAG, String.valueOf(minutes) + " was difference in minutes.");
         return urlTemp;
     }
 

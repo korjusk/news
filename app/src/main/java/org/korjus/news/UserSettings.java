@@ -21,68 +21,80 @@ public class UserSettings {
         editor.apply();
     }
 
-    public Date getLastVisitDate() {
-        Date date = new Date(settings.getLong("date", 0));
-        //Log.d(TAG, "get Date From Settings: " + date);
+        //// Getters ////
+
+    public long getCurrentSessionStartTime() {
+        return settings.getLong("currentSession", 0l);
+    }
+
+    // Previous session start time
+    public Date getLastSessionTime() {
+        Date date = new Date(settings.getLong("lastSession", 0));
         return date;
     }
 
+    // Previous download time
+    public long getLastDownloadTime() {
+        return settings.getLong("lastDownload", 0l);
+    }
+
     public int getSpinnerPosition() {
-        return settings.getInt("spinnerPos", 0);
+        return settings.getInt("spinner", 0);
     }
 
     public String getCustomUrl() {
         String base = "https://www.reddit.com/r/worldnews/.rss";
-        return settings.getString("urlCustom", base);
+        return settings.getString("customUrl", base);
     }
 
     public boolean getIsFirstVisit() {
         return settings.getBoolean("isFirstVisit", true);
     }
 
-    public long getSessionStartTime() {
-        return settings.getLong("session", 0l);
-    }
+        //// Setters ////
 
-    public void setLastVisitDate() {
+    public void setCurrentSessionStartTime() {
         Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong("date", clock.getCurrentMillis());
+        editor.putLong("currentSession", clock.getCurrentTimeMillis());
         editor.apply();
 
-        Log.d(TAG, "last visit date saved to settings.");
+        Log.d(TAG, "Current session start time saved to settings.");
     }
 
-    public void setSessionStartTime() {
-        Clock clock = new Clock();
+    // Previous session start time
+    public void setLastSessionTime() {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putLong("session", clock.getCurrentMillis());
+        // Last Session time will be set to previous session "CurrentSessionStartTime";
+        editor.putLong("lastSession", getCurrentSessionStartTime());
         editor.apply();
 
-        Log.d(TAG, "Session start time saved to settings.");
+        Log.d(TAG, "Last Session time set to Current Session Start Time");
+    }
+
+    // Previous download time
+    public void setLastDownloadTime() {
+        Clock clock = new Clock();
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putLong("lastDownload", clock.getCurrentTimeMillis());
+        editor.apply();
+
+        Log.d(TAG, "Last Download Time Saved.");
     }
 
     public void setSpinnerPosition(int i) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt("spinnerPos", i);
+        editor.putInt("spinner", i);
         editor.apply();
     }
 
     public void setCustomUrl(int pos) {
         SharedPreferences.Editor editor = settings.edit();
-        editor.putString("urlCustom", Url.getUrl(pos));
+        editor.putString("customUrl", Url.getUrl(pos));
         editor.apply();
     }
 
-    public void setCustomUrlWithDif() {
-        Clock clock = new Clock();
-
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("urlCustom", Url.getSinceUrl(clock.getDifferenceMillis()));
-        editor.apply();
-    }
-
-    public void setIsFirstVisit() {
+    public void setIsFirstVisitToFalse() {
         SharedPreferences.Editor editor = settings.edit();
         editor.putBoolean("isFirstVisit", false);
         editor.apply();
