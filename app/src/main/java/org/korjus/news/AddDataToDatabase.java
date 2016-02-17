@@ -28,13 +28,19 @@ public class AddDataToDatabase {
                 long diffMinutes = clock.getLastSessionDifferenceMillis() / 60000;
                 //Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
 
-                Date current = new Date(listVisitDate.getTime() - 7200000); // todo minus 2h timezone
+                Date current = new Date(listVisitDate.getTime() - clock.getTimezoneMillis());
 
                 // Its acceptable when news item are published after listVisitDate(Time when user last visited the app)
                 // OR if difference is 60minutes or smaller. if its below 1 hour then all the past hour news will be acceptable
                 boolean acceptable = item.after(current) || diffMinutes <= 60;
 
-                //Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
+/*                Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
+                Log.d(TAG, "timezon: " + String.valueOf(clock.getTimezoneMillis()));
+                Log.d(TAG, "published: " + published);
+                Log.d(TAG, "item: " + item);
+                Log.d(TAG, "listVisitDate: " + listVisitDate);
+                Log.d(TAG, "current: " + current);
+                Log.d(TAG, "acceptable: " + String.valueOf(acceptable));*/
 
                 // Add news item to db only if they are acceptable
                 if (acceptable){

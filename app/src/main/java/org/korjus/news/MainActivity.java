@@ -37,8 +37,13 @@ public static -> private
 
 spinner arrow style
 support for older versions
-support for other timezones
 icon
+
+Test different:
+Timezones
+Locations
+Daylight times
+Android versions
 
 cd data/data/org.korjus.news/databases
 */

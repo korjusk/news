@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class Clock {
     private static final String TAG = "u8i9 Clock";
@@ -71,5 +72,10 @@ public class Clock {
         boolean IsNewSession = getLastDownloadDifferenceMillis() > 1800000; // 30 minutes
         Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
         return IsNewSession;
+    }
+
+    public int getTimezoneMillis() {
+        TimeZone timeZone = TimeZone.getDefault();
+        return timeZone.getRawOffset();
     }
 }
