@@ -13,4 +13,13 @@
         android:orderInCategory="2"
         app:showAsAction="never"
         android:title="Check for updates" />
+
+
+    <!--    In addition to help, you might want to expose other information,
+            such as copyright info, credits, terms of service, and privacy policy.-->
+    <item
+        android:id="@+id/menu_help"
+        android:orderInCategory="3"
+        app:showAsAction="never"
+        android:title="Help" />
 </menu>

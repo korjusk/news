@@ -3,10 +3,10 @@ package org.korjus.news;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (settings.getSpinnerPosition() == 6) {
             settings.setCustomUrl(6);
-
             Toast.makeText(this, clock.getStringFromMillis(clock.getLastSessionDifferenceMillis()), Toast.LENGTH_LONG).show();
         }
 
@@ -121,17 +120,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.menu_update) {
-            // todo remove
-            throw new RuntimeException("This is a crash");
-
-/*
             // User can manually check if there is updates in dropbox folder
             // This will be removed when the app becomes available in play store
             String updateUrl =
                     "https://www.dropbox.com/sh/6afaza65f37mlze/AADXVimhKAZDzw7d9Fc_QTuXa?dl=0";
             Intent checkUpdates = new Intent(Intent.ACTION_VIEW);
             checkUpdates.setData(Uri.parse(updateUrl));
-            startActivity(checkUpdates);*/
+            startActivity(checkUpdates);
+        }
+
+        if (id == R.id.menu_help) {
+            Log.d(TAG, "Help!!");
+            alert();
         }
 
         return super.onOptionsItemSelected(item);
@@ -220,35 +220,29 @@ public class MainActivity extends AppCompatActivity {
             settings.setLastSessionTime();
 
             settings.setCurrentSessionStartTime();
-
-            if(settings.getIsFirstVisit()){
-                Log.d(TAG, "It is first visit!");
-                instructions();
-
-                settings.setIsFirstVisitToFalse();
-            }
         }
 
         settings.setLastDownloadTime();
     }
-
-    public void instructions() {
-       CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.main_content);
-        String msg = "Swipe left to see more news \nPull down to refresh";
-
-        final Snackbar snackBar = Snackbar.make(layout, msg, Snackbar.LENGTH_INDEFINITE);
-        snackBar.setAction("Got it", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackBar.dismiss();
-            }
-        });
-        snackBar.show();
-    }
-
+    
     public void refresh() {
         // Start new Main Activity
         Intent goToHome = new Intent(context, MainActivity.class);
         startActivity(goToHome);
+    }
+
+    public void alert() {
+        String msg = "Swipe left to see next news.\n" +
+                "Pull down to refresh.\n" +
+                "Long click to open news comments.\n" +
+                "Click app title to change sorting order";
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+
+        alertDialogBuilder.setMessage(msg).setCancelable(true);
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.show();
     }
 }

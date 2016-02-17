@@ -47,12 +47,12 @@ public class Clock {
     }
 
     public String getStringFromMillis(long millis){
-        String base = "Last visit was ";
+        String base = "Last session was ";
         String end = "ago.";
 
-        int minutes = 60000;
-        int hour = 3600000;
-        int day = 86400000;
+        long minutes = 60000l;
+        long hour = 3600000l;
+        long day = 86400000l;
         long month = 2629746000l;
 
         if(millis < hour) {
@@ -66,9 +66,9 @@ public class Clock {
         }
     }
 
-    // Returns true if last download was more than 20 minutes ago
+    // Returns true if last download was more than 30 minutes ago
     public boolean getIsNewSession() {
-        boolean IsNewSession = getLastDownloadDifferenceMillis() > 1200000; // 20 minutes
+        boolean IsNewSession = getLastDownloadDifferenceMillis() > 1800000; // 30 minutes
         Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
         return IsNewSession;
     }

@@ -35,16 +35,18 @@ public class Url {
     }
 
 
-    public static String getSinceUrl(Long dif) {
+    public static String getSinceUrl(Long millis) {
         String urlTemp = "https://www.reddit.com/r/worldnews/top/.rss?sort=top&t=";
 
-        long minutes = dif / 60000;
+        long hour = 3600000l;
+        long day = 86400000l;
+        long week = 604800000l;
 
-        if (minutes<60){
+        if (millis < hour){
             urlTemp += "hour";
-        } else if (minutes<60*24){
+        } else if (millis < day){
             urlTemp += "day";
-        } else if (minutes<60*24*7){
+        } else if (millis < week){
             urlTemp += "week";
         } else {
             urlTemp += "month";
