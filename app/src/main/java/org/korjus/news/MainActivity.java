@@ -32,9 +32,7 @@ oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
 
-rename
-clean code
-comment
+clean, rename, comment
 public static -> private
 
 spinner arrow style
@@ -224,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 
         settings.setLastDownloadTime();
     }
-    
+
     public void refresh() {
         // Start new Main Activity
         Intent goToHome = new Intent(context, MainActivity.class);

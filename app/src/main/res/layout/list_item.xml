@@ -9,6 +9,6 @@
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     tools:ignore="RtlCompat"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp" />
+    android:paddingTop="7dp"
+    android:paddingBottom="7dp" />
     <!--todo tools:ignore="RtlCompat" -->
