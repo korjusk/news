@@ -53,14 +53,14 @@ public class PlaceholderFragment extends Fragment {
         pageNr = getArguments().getInt(ARG_SECTION_NUMBER);
 
         // Add 5 news items to dataList if they are available
-        addDataToDatalist();
+        addDataToDataList();
         instantiateListview(rootView);
         pullToRefresh(rootView);
 
         return rootView;
     }
 
-    private void addDataToDatalist() {
+    private void addDataToDataList() {
         dataList = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
             int e = (pageNr - 1) * 5 + i;
@@ -75,7 +75,7 @@ public class PlaceholderFragment extends Fragment {
     }
 
     private void instantiateListview(View rootView){
-        itemsAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        itemsAdapter = new ArrayAdapter<>(getContext(), R.layout.list_item, dataList);
         ListView listView = (ListView) rootView.findViewById(R.id.listView);
         listView.setAdapter(itemsAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
