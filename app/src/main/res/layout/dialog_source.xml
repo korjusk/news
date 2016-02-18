@@ -13,7 +13,8 @@
         android:layout_alignParentStart="true"
         android:layout_toLeftOf="@+id/etUrlEnd"
         android:layout_toStartOf="@+id/etUrlEnd"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:inputType="textUri"/>
 
     <TextView
         android:layout_width="wrap_content"

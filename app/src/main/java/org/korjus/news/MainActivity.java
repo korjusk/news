@@ -42,6 +42,7 @@ move onOptionsItemSelected to new class
 
 spinner arrow style
 icon
+disable back button?
 
 Test different:
 Timezones
