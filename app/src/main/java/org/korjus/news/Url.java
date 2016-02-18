@@ -2,16 +2,16 @@ package org.korjus.news;
 
 public class Url {
     private static final String TAG = "u8i9 Url";
-    private static String base = "https://www.reddit.com/r/worldnews/.rss";
 
     public static String getUrl(int pos) {
-        String urlTemp = "https://www.reddit.com/r/worldnews/top/.rss?sort=top&t=";
+        UserSettings settings = new UserSettings();
+        String urlTemp = settings.getCustomSource() + "/top/.rss?sort=top&t=";
         switch (pos) {
             case 0:
-                urlTemp = base;
+                urlTemp = settings.getCustomSource() + "/.rss";
                 break;
             case 1:
-                urlTemp = "https://www.reddit.com/r/worldnews/new/.rss";
+                urlTemp = settings.getCustomSource() + "/new/.rss";
                 break;
             case 2:
                 urlTemp += "day";
@@ -36,7 +36,8 @@ public class Url {
 
 
     public static String getSinceUrl(Long millis) {
-        String urlTemp = "https://www.reddit.com/r/worldnews/top/.rss?sort=top&t=";
+        UserSettings settings = new UserSettings();
+        String urlTemp = settings.getCustomSource() + "/top/.rss?sort=top&t=";
 
         long hour = 3600000l;
         long day = 86400000l;

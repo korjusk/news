@@ -43,9 +43,13 @@ public class UserSettings {
     }
 
     public String getCustomUrl() {
-        String base = "https://www.reddit.com/r/worldnews/.rss";
-        return settings.getString("customUrl", base);
+        return settings.getString("customUrl", getCustomSource());
     }
+
+    public String getCustomSource() {
+        return settings.getString("source", "https://www.reddit.com/r/worldnews");
+    }
+
 
     public boolean getIsFirstVisit() {
         return settings.getBoolean("isFirstVisit", true);
@@ -91,6 +95,12 @@ public class UserSettings {
     public void setCustomUrl(int pos) {
         SharedPreferences.Editor editor = settings.edit();
         editor.putString("customUrl", Url.getUrl(pos));
+        editor.apply();
+    }
+
+    public void setCustomSource(String source){
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("source", source);
         editor.apply();
     }
 

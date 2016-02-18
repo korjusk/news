@@ -1,6 +1,7 @@
 package org.korjus.news;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -10,11 +11,13 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -32,11 +35,12 @@ oldDb has duplicated values
 adding items to db is too slow
 OldNews class in unnecessary
 
+menu
 clean, rename, comment
 public static -> private
+move onOptionsItemSelected to new class
 
 spinner arrow style
-support for older versions
 icon
 
 Test different:
@@ -81,11 +85,6 @@ public class MainActivity extends AppCompatActivity {
         restartDatabases();
         sessionInfo();
 
-        if (settings.getSpinnerPosition() == 6) {
-            settings.setCustomUrl(6);
-            Toast.makeText(this, clock.getStringFromMillis(clock.getLastSessionDifferenceMillis()), Toast.LENGTH_LONG).show();
-        }
-
         // Download and parse data from urlCustom
         new DownloadTask().execute(settings.getCustomUrl());
     }
@@ -115,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
 
             lastItemId = null;
 
-            UserSettings settings = new UserSettings();
             settings.deleteAll();
 
             refresh();
@@ -133,8 +131,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (id == R.id.menu_help) {
-            Log.d(TAG, "Help!!");
             alert();
+        }
+
+        if (id == R.id.menu_source){
+            // Make new alert with Save and Cancel buttons.
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            // Get the layout inflater
+            LayoutInflater inflater = MainActivity.this.getLayoutInflater();
+            View mView = inflater.inflate(R.layout.dialog_source, null);
+
+            // Set text to EditText
+            final EditText etSearch = (EditText)mView.findViewById(R.id.etSource);
+            final String base = "https://www.reddit.com";
+            etSearch.setText(settings.getCustomSource().replace(base, ""));
+
+            builder.setView(mView)
+                    // Add action buttons
+                    .setPositiveButton("Save",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    String mSearchText = etSearch.getText().toString();
+                                    settings.setCustomSource(base + mSearchText);
+                                            Log.d(TAG, settings.getCustomSource());
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int id) {
+                                    dialog.cancel();
+                                }
+                            });
+            // return builder.create();
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -217,15 +251,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sessionInfo() {
+        // Update session start times
         if (clock.getIsNewSession())  {
-
             // Previous session start time
             settings.setLastSessionTime();
-
             settings.setCurrentSessionStartTime();
         }
-
         settings.setLastDownloadTime();
+
+        // Update URL
+        int spinnerPosition = settings.getSpinnerPosition();
+        settings.setCustomUrl(spinnerPosition);
+
+        // Make toast if "since last time" is selected
+        if (spinnerPosition == 6) {
+            Toast.makeText(this, clock.getStringFromMillis(clock.getLastSessionDifferenceMillis()), Toast.LENGTH_LONG).show();
+        }
     }
 
     public void refresh() {
