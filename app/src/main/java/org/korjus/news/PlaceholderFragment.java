@@ -1,7 +1,6 @@
 package org.korjus.news;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -14,7 +13,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 
 
@@ -64,13 +62,13 @@ public class PlaceholderFragment extends Fragment {
         dataList = new ArrayList<>();
         for (int i = 1; i < 6; i++) {
             int e = (pageNr - 1) * 5 + i;
-
+/*
             NewsItem item = cupboard().withDatabase(MainActivity.db).get(NewsItem.class, e);
             if (item != null) {
                 dataList.add(item.getTitle());
             } else {
                 break;
-            }
+            }*/
         }
     }
 
@@ -83,7 +81,7 @@ public class PlaceholderFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int pos = (pageNr - 1) * 5 + position + 1;
                 Intent goToImdb = new Intent(Intent.ACTION_VIEW);
-                goToImdb.setData(Uri.parse(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, pos).getContent()));
+                //goToImdb.setData(Uri.parse(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, pos).getContent()));
                 startActivity(goToImdb);
             }
         });
@@ -93,9 +91,9 @@ public class PlaceholderFragment extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 int pos = (pageNr - 1) * 5 + position + 1;
                 Intent goToImdb = new Intent(Intent.ACTION_VIEW);
-                NewsItem item = cupboard().withDatabase(MainActivity.db).get(NewsItem.class, pos);
-                Uri uri = Uri.parse(item.getCommentsLink());
-                goToImdb.setData(uri);
+                //NewsItem item = cupboard().withDatabase(MainActivity.db).get(NewsItem.class, pos);
+                //Uri uri = Uri.parse(item.getCommentsLink());
+                //goToImdb.setData(uri);
                 startActivity(goToImdb);
                 return true;
             }
@@ -134,24 +132,22 @@ public class PlaceholderFragment extends Fragment {
         for (int i = 1; i < 6; i++) {
             int e = (pageNr - 1) * 5 + i;
 
-            NewsItem item = cupboard().withDatabase(MainActivity.db).get(NewsItem.class, e);
+            /*//NewsItem item = cupboard().withDatabase(MainActivity.db).get(NewsItem.class, e);
             if (item != null) {
                 // Clear dataList before adding any data
                 if (i == 1) {
                     dataList.clear();
                 }
-                dataList.add(item.getTitle());
+                //dataList.add(item.getTitle());
                 if (pageNr == 1) {
-                    for (int r = 0; r < 100; r++){
                         // If this fragment is first page fragment then add all the news that`s
                         // inserted to dataList also to db OLD.
-                        DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(MainActivity.dbOld).put(new OldNews(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId()));
+                        // DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(MainActivity.dbOld).put(new OldNews(cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId()));
                         // Log.d(TAG, "Fragment updateUI, adding to old db " + String.valueOf(i) + "    ID: " + cupboard().withDatabase(MainActivity.db).get(NewsItem.class, i).getId() + " items in Old DB: " + String.valueOf(MainActivity.itemsInDbOld));
-                    }
                     }
             } else {
                 break;
-            }
+            }*/
         }
         itemsAdapter.notifyDataSetChanged();
         // Log.d(TAG, "Fragment updated, Items in DB: " + String.valueOf(MainActivity.itemsInDb) + " In OLD DB: " + String.valueOf(MainActivity.itemsInDbOld));

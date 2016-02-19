@@ -24,11 +24,11 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 /*Todo
 oldDb has duplicated values
@@ -83,11 +83,37 @@ public class MainActivity extends AppCompatActivity {
 
         instantiateSpinner();
         instantiateViewPagerWithAdapters();
-        restartDatabases();
         sessionInfo();
 
-        // Download and parse data from urlCustom
-        new DownloadTask().execute(settings.getCustomUrl());
+/*        // Download and parse data from urlCustom
+        new DownloadTask().execute(settings.getCustomUrl());*/
+
+
+        Post post = new Post();
+        post.text = "Post text";
+        post.user = new User();
+        post.user.profilePictureUrl = "url";
+        post.user.userName = "madman";
+
+        Post post2 = new Post();
+        post2.text = "Post2 text";
+        post2.user = new User();
+        post2.user.profilePictureUrl = "url2";
+        post2.user.userName = "madman2";
+
+
+
+        PostsDatabaseHelper postsDatabaseHelper = PostsDatabaseHelper.getInstance(this);
+        postsDatabaseHelper.addPost(post);
+        postsDatabaseHelper.addPost(post2);
+        postsDatabaseHelper.addPost(post);
+
+        List<Post> posts = postsDatabaseHelper.getAllPosts();
+        for (int i = 0; i < posts.size(); i++){
+            Log.d(TAG, posts.get(i).toString());
+        }
+
+
     }
 
     @Override
@@ -104,14 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             // Close and delete Database so It could be recreated
-            dbOld.close();
-            db.close();
 
-            deleteDatabase(DatabaseBlockedHelper.DATABASE_NAME);
-            deleteDatabase(DatabaseHelper.DATABASE_NAME);
-
-            DatabaseBlockedHelper.itemsInDb = 0l;
-            DatabaseHelper.itemsInDb = 1l;
 
             lastItemId = null;
 
@@ -219,13 +238,13 @@ public class MainActivity extends AppCompatActivity {
                 for (int i = 1; i < 6; i++) {
                     // News location in db
                     int e = page * 5 + i;
-
+/*
                     NewsItem newsItem = cupboard().withDatabase(db).get(NewsItem.class, e);
                     if (null != newsItem) {
                         // Convert news to blocked news and add that to old news db
                         OldNews oldNews = new OldNews(newsItem.getId());
-                        DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
-                    }
+                        // DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
+                    }*/
                 }
             }
 
@@ -235,21 +254,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void restartDatabases(){
-        if (null != db){
-            // Close and delete Database so It could be recreated
-            db.close();
-            deleteDatabase(DatabaseHelper.DATABASE_NAME);
-        }
 
-        DatabaseBlockedHelper dbHelperOld = new DatabaseBlockedHelper(this);
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-
-        dbOld = dbHelperOld.getWritableDatabase();
-        db = dbHelper.getWritableDatabase();
-
-        DatabaseHelper.itemsInDb = 1l;
-    }
 
     private void sessionInfo() {
         // Update session start times

@@ -80,7 +80,7 @@ public class RssParser {
             }
         }
 
-        new AddDataToDatabase(content,id,link,published,title);
+        //new AddDataToDatabase(content,id,link,published,title);
     }
 
     // Processes title tags in the feed.

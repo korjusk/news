@@ -2,7 +2,6 @@ package org.korjus.news;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -34,8 +33,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
-        long items = DatabaseHelper.itemsInDb;
-
+/*
         // Update all fragments that are created
         for (Object value : MainActivity.m1.values()) {
             PlaceholderFragment fragment = (PlaceholderFragment) value;
@@ -49,7 +47,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         // Triggers a redraw of the PageAdapter
         MainActivity.SectionsAdapter.notifyDataSetChanged();
 
-        Log.d(TAG, "Items in Db: " + String.valueOf(DatabaseHelper.itemsInDb) + " Blocked items: " + String.valueOf(DatabaseBlockedHelper.itemsInDb));
 
         // Download more data if there's below 25 news in db
         if(items < 25){
@@ -76,7 +73,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             }
         } else {
             //saveLastVisitDate();
-        }
+        }*/
     }
 
     private void saveLastVisitDate() {

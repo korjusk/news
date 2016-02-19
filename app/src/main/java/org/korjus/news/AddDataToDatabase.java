@@ -2,7 +2,6 @@ package org.korjus.news;
 
 import java.util.Date;
 
-import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 // This class decides if data should be added to database
 // and adds it to there if necessary
@@ -12,8 +11,8 @@ public class AddDataToDatabase {
     private boolean sinceLastVisit;
 
     public AddDataToDatabase(String content, String id, String link, String published, String title) {
-        // Returns null when there is no entry in the "db Old" with oldId matching "id"
-        OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
+       /* // Returns null when there is no entry in the "db Old" with oldId matching "id"
+        //OldNews oldNews = cupboard().withDatabase(MainActivity.dbOld).query(OldNews.class).withSelection("oldId = ?", id).get();
 
         // true means its new news and it will be added to db
         if (oldNews == null) {
@@ -34,26 +33,26 @@ public class AddDataToDatabase {
                 // OR if difference is 60minutes or smaller. if its below 1 hour then all the past hour news will be acceptable
                 boolean acceptable = item.after(current) || diffMinutes <= 60;
 
-/*                Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
+*//*                Log.d(TAG, "published: " + item + " current date:    " + current + " Acceptable: " + String.valueOf(acceptable));
                 Log.d(TAG, "timezon: " + String.valueOf(clock.getTimezoneMillis()));
                 Log.d(TAG, "published: " + published);
                 Log.d(TAG, "item: " + item);
                 Log.d(TAG, "listVisitDate: " + listVisitDate);
                 Log.d(TAG, "current: " + current);
-                Log.d(TAG, "acceptable: " + String.valueOf(acceptable));*/
+                Log.d(TAG, "acceptable: " + String.valueOf(acceptable));*//*
 
                 // Add news item to db only if they are acceptable
                 if (acceptable){
-                    DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+                    //DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
                 }
 
             } else { // Sort order is not set to "since last visit". Add data to db.
-                DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
+                //DatabaseHelper.itemsInDb = cupboard().withDatabase(MainActivity.db).put(new NewsItem(content, id, link, published, title));
             }
 
         }
         // Last news item Id. It is used to get next page url.
-        MainActivity.lastItemId = id;
+        MainActivity.lastItemId = id;*/
     }
 
     private void loadSettings(){
