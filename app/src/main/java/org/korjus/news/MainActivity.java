@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -88,30 +87,24 @@ public class MainActivity extends AppCompatActivity {
 /*        // Download and parse data from urlCustom
         new DownloadTask().execute(settings.getCustomUrl());*/
 
+        NewsItem newsItem = new NewsItem("httpDirect", "244312", "HTTPcomments", "eile", "uudis title");
+        NewsItem newsItem2 = new NewsItem("2httpDirect", "2244312", "2HTTPcomments", "2eile", "2uudis title");
+        NewsItem newsItem3 = new NewsItem("2httpDirect", "2244312", "2HTTPcomments", "2eile", "2uudis title");
 
-        Post post = new Post();
-        post.text = "Post text";
-        post.user = new User();
-        post.user.profilePictureUrl = "url";
-        post.user.userName = "madman";
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
 
-        Post post2 = new Post();
-        post2.text = "Post2 text";
-        post2.user = new User();
-        post2.user.profilePictureUrl = "url2";
-        post2.user.userName = "madman2";
+        databaseHelper.addNews(newsItem);
+        databaseHelper.addNews(newsItem);
+        databaseHelper.addNews(newsItem2);
+        databaseHelper.addNews(newsItem3);
 
 
+        databaseHelper.addOld("asdaw");
+        databaseHelper.addOld("2424asdasd");
+        //databaseHelper.addOld("asdaw");
 
-        PostsDatabaseHelper postsDatabaseHelper = PostsDatabaseHelper.getInstance(this);
-        postsDatabaseHelper.addPost(post);
-        postsDatabaseHelper.addPost(post2);
-        postsDatabaseHelper.addPost(post);
 
-        List<Post> posts = postsDatabaseHelper.getAllPosts();
-        for (int i = 0; i < posts.size(); i++){
-            Log.d(TAG, posts.get(i).toString());
-        }
+
 
 
     }
