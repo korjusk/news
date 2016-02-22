@@ -12,7 +12,8 @@ public class AddDataToDatabase {
 
     // OLD: (String content, String code, String link, String published, String title)
     public AddDataToDatabase(String code, String title, String content, String comments, String published) {
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+        MainActivity mainActivity = (MainActivity) MainActivity.getContext();
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mainActivity);
 
         // Checks if news is new
         // or user has seen the news already and the news id is in old news db
@@ -47,7 +48,8 @@ public class AddDataToDatabase {
         }
 
         // Last news item Id. It is used to get next page url.
-        MainActivity.lastItemId = code;
+        UserSettings settings = new UserSettings();
+        settings.setLastItemId(code);
     }
 
     private void loadSettings(){

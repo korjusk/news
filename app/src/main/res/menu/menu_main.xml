@@ -6,7 +6,7 @@
     <item
         android:id="@+id/menu_source"
         android:orderInCategory="0"
-        android:title="Edit source"
+        android:title="Edit source (Advanced)"
         app:showAsAction="never" />
 
     <item
@@ -18,8 +18,8 @@
     <item
         android:id="@+id/menu_update"
         android:orderInCategory="2"
-        app:showAsAction="never"
-        android:title="Check for updates" />
+        android:title="Check for updates"
+        app:showAsAction="never" />
 
 
     <!--    In addition to help, you might want to expose other information,
@@ -27,6 +27,6 @@
     <item
         android:id="@+id/menu_help"
         android:orderInCategory="3"
-        app:showAsAction="never"
-        android:title="Help" />
+        android:title="Help!"
+        app:showAsAction="never" />
 </menu>

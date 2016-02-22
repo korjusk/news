@@ -6,11 +6,11 @@ import java.util.Date;
 
 public class UserSettings {
     private static final String TAG = "u8i9 UserSettings";
-    MainActivity mainActivity;
-    SharedPreferences settings;
+    private MainActivity mainActivity;
+    private SharedPreferences settings;
 
     public UserSettings() {
-        mainActivity = (MainActivity) MainActivity.context;
+        mainActivity = (MainActivity) MainActivity.getContext();
         settings = mainActivity.getSharedPreferences("settings", 0);
     }
 
@@ -41,20 +41,47 @@ public class UserSettings {
         return settings.getInt("spinner", 0);
     }
 
+    public void setSpinnerPosition(int i) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt("spinner", i);
+        editor.apply();
+    }
+
     public String getCustomUrl() {
         return settings.getString("customUrl", getCustomSource());
+    }
+
+    public void setCustomUrl(int pos) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("customUrl", Url.getUrl(pos));
+        editor.apply();
     }
 
     public String getCustomSource() {
         return settings.getString("source", "https://www.reddit.com/r/worldnews");
     }
 
+        //// Setters ////
+
+    public void setCustomSource(String source) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("source", source);
+        editor.apply();
+    }
+
+    public String getLastItemId() {
+        return settings.getString("lastItemId", "");
+    }
+
+    public void setLastItemId(String lastItemId) {
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString("lastItemId", lastItemId);
+        editor.apply();
+    }
 
     public boolean getIsFirstVisit() {
         return settings.getBoolean("isFirstVisit", true);
     }
-
-        //// Setters ////
 
     public void setCurrentSessionStartTime() {
         Clock clock = new Clock();
@@ -76,24 +103,6 @@ public class UserSettings {
         Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("lastDownload", clock.getCurrentTimeMillis());
-        editor.apply();
-    }
-
-    public void setSpinnerPosition(int i) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt("spinner", i);
-        editor.apply();
-    }
-
-    public void setCustomUrl(int pos) {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("customUrl", Url.getUrl(pos));
-        editor.apply();
-    }
-
-    public void setCustomSource(String source){
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("source", source);
         editor.apply();
     }
 

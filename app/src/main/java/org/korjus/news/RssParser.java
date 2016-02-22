@@ -188,7 +188,7 @@ public class RssParser {
         if (count > 1){
             winner = null;
         }
-        
+
         return winner;
     }
 }

@@ -14,7 +14,7 @@ import java.net.URL;
 // Implementation of AsyncTask used to download XML feed from reddit
 public class DownloadTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "u8i9 DownloadTask";
-    String lastUrl;
+    private String lastUrl;
 
     @Override
     protected String doInBackground(String... urls) {
@@ -33,37 +33,27 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         //Log.d(TAG, "after lag");
-        DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+        MainActivity mainActivity = (MainActivity) MainActivity.getContext();
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(mainActivity);
         dbHelper.addFiveNewsToOld(1);
 
         long itemsInNewsDb = dbHelper.getNewsSize();
-
-        // Update all fragments that are created
-        for (Object value : MainActivity.m1.values()) {
-            PlaceholderFragment fragment = (PlaceholderFragment) value;
-            fragment.updateUI();
-        }
-
         // Change the pager adapter nr of page count
-        int newPageNr = (int) Math.ceil(itemsInNewsDb / 5.0); //todo was items
-        MainActivity.SectionsAdapter.setCount(newPageNr);
-
-        // Triggers a redraw of the PageAdapter
-        MainActivity.SectionsAdapter.notifyDataSetChanged();
-
+        int newPageNr = (int) Math.ceil(itemsInNewsDb / 5.0);
+        mainActivity.setSectionsAdapterCount(newPageNr);
         Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " + String.valueOf(dbHelper.getOldSize()) + " in old db.");
 
+        PlaceholderFragment.updateAllFragments();
 
         // Download more data if there's below 25 news in db
         if(itemsInNewsDb < 25){
             UserSettings settings = new UserSettings();
             String url = settings.getCustomUrl();
 
-            String newUrl;
-            if(url.contains("?")){
-                newUrl = url + "&count=25&after=" + MainActivity.lastItemId;
-            } else {
-                newUrl = url + "?count=25&after=" + MainActivity.lastItemId;
+            String newUrl = url + "?count=25&after=" + settings.getLastItemId();
+
+            if (url.contains(".rss?sort=")) {
+                newUrl = newUrl.replace("?count=", "&count=");
             }
 
             // download more data if the url is new
@@ -71,7 +61,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
                 Log.d(TAG, "Escaped loop");
 
                 if (itemsInNewsDb < 5) {
-                    Toast.makeText(MainActivity.context, "No more new news...", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mainActivity, "No more new news...", Toast.LENGTH_LONG).show();
                 }
             } else {
                 new DownloadTask().execute(newUrl);

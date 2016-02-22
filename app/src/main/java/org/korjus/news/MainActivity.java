@@ -22,23 +22,16 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.fabric.sdk.android.Fabric;
 
 
 /*Todo
 5 seconds lag between doInBackground and onPostExecute.
-delete first add
 
 menu
 clean, rename, comment
 public static -> private
-move onOptionsItemSelected to new class
 
-spinner arrow style
-icon
 minsdk to 10
 
 Test different:
@@ -53,13 +46,14 @@ cd data/data/org.korjus.news/databases
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
-    public static Context context;
-    public static Map m1 = new HashMap();
-    public static String lastItemId;
-    public static SectionsPagerAdapter SectionsAdapter;
+    private static Context context;
+    private SectionsPagerAdapter sectionsAdapter;
     private UserSettings settings;
     private Clock clock;
 
+    public static Context getContext() {
+        return context;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +91,8 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_settings) {
             // Delete Database's and other data.
-            DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
             dbHelper.deleteAllData();
-
-            lastItemId = null;
             settings.deleteAll();
             Spinner spinner = (Spinner) findViewById(R.id.spinner);
             spinner.setSelection(0, false);
@@ -169,7 +161,8 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(),
                 R.array.order, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         // Set spinner position
@@ -190,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void instantiateViewPagerWithAdapters() {
         // Create the adapter that will return a fragment for each tab of the activity.
-        SectionsAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        sectionsAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter and on page change listener.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(SectionsAdapter);
+        mViewPager.setAdapter(sectionsAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -203,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int page) {
                 int i = page * 5 + 1;
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 // Add selected page news ID's to old db
                 dbHelper.addFiveNewsToOld(i);
             }
@@ -213,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void sessionInfo() {
         // Update session start times
@@ -257,5 +249,11 @@ public class MainActivity extends AppCompatActivity {
         alertDialogBuilder.setMessage(msg).setCancelable(true);
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
+    }
+
+    public void setSectionsAdapterCount(int i) {
+        sectionsAdapter.setCount(i);
+        // Triggers a redraw of the PageAdapter
+        sectionsAdapter.notifyDataSetChanged();
     }
 }

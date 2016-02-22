@@ -8,11 +8,9 @@ import java.util.TimeZone;
 
 public class Clock {
     private static final String TAG = "u8i9 Clock";
-    MainActivity mainActivity;
-    UserSettings settings;
+    private UserSettings settings;
 
     public Clock() {
-        mainActivity = (MainActivity) MainActivity.context;
         settings = new UserSettings();
     }
 

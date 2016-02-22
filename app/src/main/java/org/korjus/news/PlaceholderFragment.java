@@ -13,18 +13,21 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class PlaceholderFragment extends Fragment {
     private static final String TAG = "u8i9 Fragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
-    ArrayAdapter<String> itemsAdapter;
-    List<String> dataList;
-    int pageNr;
-    SwipeRefreshLayout swipeContainer;
-    MainActivity mainActivity;
-    DatabaseHelper dbHelper;
+    private static Map mapFragments = new HashMap();
+    private ArrayAdapter<String> itemsAdapter;
+    private List<String> dataList;
+    private int pageNr;
+    private SwipeRefreshLayout swipeContainer;
+    private MainActivity mainActivity;
+    private DatabaseHelper dbHelper;
 
     public PlaceholderFragment() {
     }
@@ -32,17 +35,25 @@ public class PlaceholderFragment extends Fragment {
     // Returns a new instance of this fragment for the given section number.
     public static PlaceholderFragment newInstance(int sectionNumber) {
         PlaceholderFragment fragment = new PlaceholderFragment();
-        MainActivity.m1.put(sectionNumber, fragment);
+        mapFragments.put(sectionNumber, fragment);
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
 
+    public static void updateAllFragments() {
+        // Update all fragments that are created
+        for (Object value : mapFragments.values()) {
+            PlaceholderFragment fragment = (PlaceholderFragment) value;
+            fragment.updateUI();
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mainActivity = (MainActivity) MainActivity.context;
+        mainActivity = (MainActivity) MainActivity.getContext();
         dbHelper = DatabaseHelper.getInstance(mainActivity);
         pageNr = getArguments().getInt(ARG_SECTION_NUMBER);
     }
@@ -77,7 +88,7 @@ public class PlaceholderFragment extends Fragment {
                 int pos = (pageNr - 1) * 5 + position + 1;
                 Intent goToImdb = new Intent(Intent.ACTION_VIEW);
                 String url = dbHelper.getNewsContent(pos);
-                if(url == null){
+                if (url == null) {
                     Log.d(TAG, "Url was null. Selecting comments url.");
                     url = dbHelper.getNewsComments(pos);
                 }
