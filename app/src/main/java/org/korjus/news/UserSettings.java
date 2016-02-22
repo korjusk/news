@@ -1,7 +1,6 @@
 package org.korjus.news;
 
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.Date;
 
@@ -62,8 +61,6 @@ public class UserSettings {
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("currentSession", clock.getCurrentTimeMillis());
         editor.apply();
-
-        Log.d(TAG, "Current session start time saved to settings.");
     }
 
     // Previous session start time
@@ -72,8 +69,6 @@ public class UserSettings {
         // Last Session time will be set to previous session "CurrentSessionStartTime";
         editor.putLong("lastSession", getCurrentSessionStartTime());
         editor.apply();
-
-        Log.d(TAG, "Last Session time set to Current Session Start Time");
     }
 
     // Previous download time
@@ -82,8 +77,6 @@ public class UserSettings {
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("lastDownload", clock.getCurrentTimeMillis());
         editor.apply();
-
-        Log.d(TAG, "Last Download Time Saved.");
     }
 
     public void setSpinnerPosition(int i) {

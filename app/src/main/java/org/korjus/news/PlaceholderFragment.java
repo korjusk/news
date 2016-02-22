@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,13 +103,6 @@ public class PlaceholderFragment extends Fragment {
                 // Your code to refresh the list here.
                 // Make sure you call swipeContainer.setRefreshing(false)
                 // once the network request has completed successfully.
-                dbHelper.deleteNewsDb();
-
-                UserSettings settings = new UserSettings();
-                if (settings.getSpinnerPosition() == 6){
-                    settings.setCustomUrl(6);
-                    //settings.setCustomUrlWithDif();
-                }
                 mainActivity.refresh();
             }
         });
@@ -122,11 +114,14 @@ public class PlaceholderFragment extends Fragment {
     }
 
     public void updateUI() {
-        Log.d(TAG, "updateUI page nr: " + String.valueOf(pageNr));
+        // Log.d(TAG, "updateUI page nr: " + String.valueOf(pageNr));
         int a = (pageNr - 1) * 5 + 1;
 
         dataList.clear();
         dataList.addAll(dbHelper.getNewsTitles(a));
         itemsAdapter.notifyDataSetChanged();
+
+        // Disables pull to refresh icon
+        swipeContainer.setRefreshing(false);
     }
 }

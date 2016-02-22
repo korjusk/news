@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
             alert();
         }
 
-        if (id == R.id.menu_source){
+        if (id == R.id.menu_source) {
             // Make new alert with Save and Cancel buttons.
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             // Get the layout inflater
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             View mView = inflater.inflate(R.layout.dialog_source, null);
 
             // Set text to EditText
-            final EditText etSearch = (EditText)mView.findViewById(R.id.etSource);
+            final EditText etSearch = (EditText) mView.findViewById(R.id.etSource);
             final String base = "https://www.reddit.com";
             etSearch.setText(settings.getCustomSource().replace(base, ""));
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                                                     int id) {
                                     String mSearchText = etSearch.getText().toString();
                                     settings.setCustomSource(base + mSearchText);
-                                            Log.d(TAG, settings.getCustomSource());
+                                    Log.d(TAG, settings.getCustomSource());
                                 }
                             })
                     .setNegativeButton("Cancel",
@@ -175,12 +175,8 @@ public class MainActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(TAG, "instantiateSpinner on item selected, pos: " + String.valueOf(position));
                 settings.setSpinnerPosition(position);
-                settings.setCustomUrl(position);
-                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
-                dbHelper.deleteNewsDb();
-                refresh(); // todo reload ilma refreshita
+                refresh();
             }
 
             @Override
@@ -216,10 +212,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void sessionInfo() {
         // Update session start times
-        if (clock.getIsNewSession())  {
+        if (clock.getIsNewSession()) {
             // Previous session start time
             settings.setLastSessionTime();
             settings.setCurrentSessionStartTime();
@@ -237,9 +232,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refresh() {
-        // Start new Main Activity
-        Intent goToHome = new Intent(context, MainActivity.class);
-        startActivity(goToHome);
+        // Log.d(TAG, "instantiateSpinner on item selected, pos: " + String.valueOf(position));
+        settings.setCustomUrl(settings.getSpinnerPosition());
+        DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+        dbHelper.deleteNewsDb();
+
+        sessionInfo();
+
+        // Download and parse data from urlCustom
+        new DownloadTask().execute(settings.getCustomUrl());
     }
 
     // Show instructions

@@ -54,10 +54,8 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " + String.valueOf(dbHelper.getOldSize()) + " in old db.");
 
 
-
         // Download more data if there's below 25 news in db
         if(itemsInNewsDb < 25){
-            Log.d(TAG, "Download new news.");
             UserSettings settings = new UserSettings();
             String url = settings.getCustomUrl();
 

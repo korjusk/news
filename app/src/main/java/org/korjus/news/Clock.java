@@ -1,7 +1,6 @@
 package org.korjus.news;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -72,7 +71,7 @@ public class Clock {
     // Returns true if last download was more than 30 minutes ago
     public boolean getIsNewSession() {
         boolean IsNewSession = getLastDownloadDifferenceMillis() > 1800000; // 30 minutes
-        Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
+        // Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
         return IsNewSession;
     }
 
