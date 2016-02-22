@@ -14,9 +14,12 @@ import java.util.regex.Matcher;
 public class RssParser {
     private static final String TAG = "u8i9 RssParser";
     private static final String ns = null;
+    private boolean defaultSource = true;
 
     public void parse(InputStream in) throws XmlPullParserException, IOException {
         try {
+            UserSettings settings = new UserSettings();
+            defaultSource = settings.getCustomSource().equals("https://www.reddit.com/r/worldnews");
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
@@ -159,17 +162,33 @@ public class RssParser {
         }
     }
 
-    // Finds all URLs from String and returns only the second URL
-    public static String extractLink(String text) {
+    // Return string(Url or null) from String
+    public String extractLink(String text) {
+        String winner = null;
+
+        // returns null if user changed the source url
+        if (!defaultSource){
+            return winner;
+        }
+
+        int count = 0;
         Matcher m = Patterns.WEB_URL.matcher(text);
-        int queue = 1;
+
         while (m.find()) {
             String url = m.group();
-            if (queue == 2) {
-                return url;
+
+            // Searches Url's that wont contain .reddit in them
+            if (!url.contains(".reddit")) {
+                winner = url;
+                count++;
             }
-            queue++;
         }
-        return "Error at extracting second url";
+
+        // returns null if multiple Url's dont contain reddit.
+        if (count > 1){
+            winner = null;
+        }
+        
+        return winner;
     }
 }

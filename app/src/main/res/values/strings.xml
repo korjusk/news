@@ -7,7 +7,10 @@
         A subreddit: http://www.reddit.com/r/worldnews/.rss \n
         A multireddit: http://www.reddit.com/r/news+wtf/.rss \n\n
 
-        Visit reddit.com/wiki/rss for more info</string>
+        Visit reddit.com/wiki/rss for more info. \n\n
+
+        NB! Direct link\'s will be disabled when using custom source.
+    </string>
 
 
     <string-array name="order">

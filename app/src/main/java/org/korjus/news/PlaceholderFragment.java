@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +76,13 @@ public class PlaceholderFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int pos = (pageNr - 1) * 5 + position + 1;
                 Intent goToImdb = new Intent(Intent.ACTION_VIEW);
-                goToImdb.setData(Uri.parse(dbHelper.getNewsContent(pos)));
+                String url = dbHelper.getNewsContent(pos);
+                if(url == null){
+                    Log.d(TAG, "Url was null. Selecting comments url.");
+                    url = dbHelper.getNewsComments(pos);
+                }
+                goToImdb.setData(Uri.parse(url));
+
                 startActivity(goToImdb);
             }
         });

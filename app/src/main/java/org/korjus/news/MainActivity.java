@@ -30,6 +30,7 @@ import io.fabric.sdk.android.Fabric;
 
 /*Todo
 5 seconds lag between doInBackground and onPostExecute.
+delete first add
 
 menu
 clean, rename, comment
@@ -38,7 +39,6 @@ move onOptionsItemSelected to new class
 
 spinner arrow style
 icon
-disable back button?
 minsdk to 10
 
 Test different:
@@ -102,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
             lastItemId = null;
             settings.deleteAll();
+            Spinner spinner = (Spinner) findViewById(R.id.spinner);
+            spinner.setSelection(0, false);
             refresh();
             return true;
         }
@@ -142,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                                     String mSearchText = etSearch.getText().toString();
                                     settings.setCustomSource(base + mSearchText);
                                     Log.d(TAG, settings.getCustomSource());
+                                    refresh();
                                 }
                             })
                     .setNegativeButton("Cancel",
