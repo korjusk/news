@@ -1,5 +1,6 @@
 package org.korjus.news;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -33,6 +34,7 @@ public class Clock {
     }
 
     public Date getTimeFromString(String raw) {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
         Date date = new Date();
 

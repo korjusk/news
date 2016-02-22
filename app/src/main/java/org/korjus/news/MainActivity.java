@@ -3,7 +3,6 @@ package org.korjus.news;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -30,9 +29,7 @@ import io.fabric.sdk.android.Fabric;
 
 
 /*Todo
-oldDb has duplicated values
-adding items to db is too slow
-OldNews class in unnecessary
+5 seconds lag between doInBackground and onPostExecute.
 
 menu
 clean, rename, comment
@@ -42,6 +39,7 @@ move onOptionsItemSelected to new class
 spinner arrow style
 icon
 disable back button?
+minsdk to 10
 
 Test different:
 Timezones
@@ -55,13 +53,10 @@ cd data/data/org.korjus.news/databases
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
-    public static SQLiteDatabase db;
-    public static SQLiteDatabase dbOld;
     public static Context context;
     public static Map m1 = new HashMap();
     public static String lastItemId;
     public static SectionsPagerAdapter SectionsAdapter;
-    public static boolean shouldSave;
     private UserSettings settings;
     private Clock clock;
 
@@ -84,29 +79,8 @@ public class MainActivity extends AppCompatActivity {
         instantiateViewPagerWithAdapters();
         sessionInfo();
 
-/*        // Download and parse data from urlCustom
-        new DownloadTask().execute(settings.getCustomUrl());*/
-
-        NewsItem newsItem = new NewsItem("httpDirect", "244312", "HTTPcomments", "eile", "uudis title");
-        NewsItem newsItem2 = new NewsItem("2httpDirect", "2244312", "2HTTPcomments", "2eile", "2uudis title");
-        NewsItem newsItem3 = new NewsItem("2httpDirect", "2244312", "2HTTPcomments", "2eile", "2uudis title");
-
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(this);
-
-        databaseHelper.addNews(newsItem);
-        databaseHelper.addNews(newsItem);
-        databaseHelper.addNews(newsItem2);
-        databaseHelper.addNews(newsItem3);
-
-
-        databaseHelper.addOld("asdaw");
-        databaseHelper.addOld("2424asdasd");
-        //databaseHelper.addOld("asdaw");
-
-
-
-
-
+        // Download and parse data from urlCustom
+        new DownloadTask().execute(settings.getCustomUrl());
     }
 
     @Override
@@ -122,13 +96,12 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            // Close and delete Database so It could be recreated
-
+            // Delete Database's and other data.
+            DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+            dbHelper.deleteAllData();
 
             lastItemId = null;
-
             settings.deleteAll();
-
             refresh();
             return true;
         }
@@ -189,21 +162,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void instantiateSpinner() {
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+        // Create an ArrayAdapter using the string array and a simple spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(),
                 R.array.order, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        // Set spinner position
         spinner.setSelection(settings.getSpinnerPosition(), false);
+        // Add on item select listener
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(TAG, "instantiateSpinner on item selected, pos: " + String.valueOf(position));
                 settings.setSpinnerPosition(position);
                 settings.setCustomUrl(position);
-                refresh();
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
+                dbHelper.deleteNewsDb();
+                refresh(); // todo reload ilma refreshita
             }
 
             @Override
@@ -216,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each tab of the activity.
         SectionsAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter and on page change listner.
+        // Set up the ViewPager with the sections adapter and on page change listener.
         ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(SectionsAdapter);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -226,19 +203,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int page) {
-                // Add selected page news items to old news database.
-                // 5 news per page so loop 5 times
-                for (int i = 1; i < 6; i++) {
-                    // News location in db
-                    int e = page * 5 + i;
-/*
-                    NewsItem newsItem = cupboard().withDatabase(db).get(NewsItem.class, e);
-                    if (null != newsItem) {
-                        // Convert news to blocked news and add that to old news db
-                        OldNews oldNews = new OldNews(newsItem.getId());
-                        // DatabaseBlockedHelper.itemsInDb = cupboard().withDatabase(dbOld).put(oldNews);
-                    }*/
-                }
+                int i = page * 5 + 1;
+                DatabaseHelper dbHelper = DatabaseHelper.getInstance(MainActivity.context);
+                // Add selected page news ID's to old db
+                dbHelper.addFiveNewsToOld(i);
             }
 
             @Override
@@ -274,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(goToHome);
     }
 
+    // Show instructions
     public void alert() {
         String msg = "Swipe left to see next news.\n" +
                 "Pull down to refresh.\n" +
@@ -281,11 +250,8 @@ public class MainActivity extends AppCompatActivity {
                 "Click app title to change sorting order";
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-
         alertDialogBuilder.setMessage(msg).setCancelable(true);
-
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         alertDialog.show();
     }
 }
