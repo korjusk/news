@@ -6,11 +6,10 @@ import java.util.Date;
 
 public class UserSettings {
     private static final String TAG = "u8i9 UserSettings";
-    private MainActivity mainActivity;
     private SharedPreferences settings;
 
     public UserSettings() {
-        mainActivity = (MainActivity) MainActivity.getContext();
+        MainActivity mainActivity = (MainActivity) MainActivity.getContext();
         settings = mainActivity.getSharedPreferences("settings", 0);
     }
 
@@ -28,8 +27,7 @@ public class UserSettings {
 
     // Previous session start time
     public Date getLastSessionTime() {
-        Date date = new Date(settings.getLong("lastSession", 0));
-        return date;
+        return new Date(settings.getLong("lastSession", 0));
     }
 
     // Previous download time
@@ -79,10 +77,6 @@ public class UserSettings {
         editor.apply();
     }
 
-    public boolean getIsFirstVisit() {
-        return settings.getBoolean("isFirstVisit", true);
-    }
-
     public void setCurrentSessionStartTime() {
         Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
@@ -103,12 +97,6 @@ public class UserSettings {
         Clock clock = new Clock();
         SharedPreferences.Editor editor = settings.edit();
         editor.putLong("lastDownload", clock.getCurrentTimeMillis());
-        editor.apply();
-    }
-
-    public void setIsFirstVisitToFalse() {
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("isFirstVisit", false);
         editor.apply();
     }
 

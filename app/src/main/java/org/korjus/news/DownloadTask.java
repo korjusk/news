@@ -41,9 +41,10 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         // Change the pager adapter nr of page count
         int newPageNr = (int) Math.ceil(itemsInNewsDb / 5.0);
         mainActivity.setSectionsAdapterCount(newPageNr);
-        Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " + String.valueOf(dbHelper.getOldSize()) + " in old db.");
+        Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " +
+                String.valueOf(dbHelper.getOldSize()) + " in old db.");
 
-        PlaceholderFragment.updateAllFragments();
+        MainFragment.updateAllFragments();
 
         // Download more data if there's below 25 news in db
         if(itemsInNewsDb < 25){
@@ -68,8 +69,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             }
         }
     }
-
-
 
     // Uploads XML from reddit, parses it, and combines it with
     // HTML markup. Returns HTML string.

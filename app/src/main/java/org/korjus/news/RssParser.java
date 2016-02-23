@@ -72,7 +72,7 @@ public class RssParser {
                     link = readLink(parser);
                     break;
                 case "updated":
-                    published = readPublished(parser);
+                    published = readUpdated(parser);
                     break;
                 case "content":
                     content = readContent(parser);
@@ -116,7 +116,7 @@ public class RssParser {
     }
 
     // Processes published tags in the feed.
-    private String readPublished(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readUpdated(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "updated");
         String published = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "updated");
@@ -164,15 +164,14 @@ public class RssParser {
 
     // Return string(Url or null) from String
     public String extractLink(String text) {
-        String winner = null;
-
         // returns null if user changed the source url
         if (!defaultSource){
-            return winner;
+            return null;
         }
 
         int count = 0;
         Matcher m = Patterns.WEB_URL.matcher(text);
+        String winner = null;
 
         while (m.find()) {
             String url = m.group();

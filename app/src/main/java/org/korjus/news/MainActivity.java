@@ -30,7 +30,6 @@ import io.fabric.sdk.android.Fabric;
 
 menu
 clean, rename, comment
-public static -> private
 
 Test different:
 Timezones
@@ -61,7 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         context = this;
         settings = new UserSettings();
@@ -87,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.menu_delete) {
             // Delete Database's and other data.
             DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
             dbHelper.deleteAllData();
@@ -153,14 +154,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void instantiateSpinner() {
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+        Context con;
+        if (getSupportActionBar() != null) {
+            con = getSupportActionBar().getThemedContext();
+        } else {
+            con = this;
+        }
+
         // Create an ArrayAdapter using the string array and a simple spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getSupportActionBar().getThemedContext(),
-                R.array.order, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter
+                .createFromResource(con, R.array.order, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         // Apply the adapter to the spinner
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setAdapter(adapter);
         // Set spinner position
         spinner.setSelection(settings.getSpinnerPosition(), false);

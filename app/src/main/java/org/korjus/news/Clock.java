@@ -20,8 +20,7 @@ public class Clock {
     }
 
     public long getLastSessionDifferenceMillis() {
-        long difference = (getCurrentTimeMillis() - settings.getLastSessionTime().getTime());
-        return difference;
+        return (getCurrentTimeMillis() - settings.getLastSessionTime().getTime());
     }
 
     public long getLastDownloadDifferenceMillis() {
@@ -68,9 +67,8 @@ public class Clock {
 
     // Returns true if last download was more than 30 minutes ago
     public boolean getIsNewSession() {
-        boolean IsNewSession = getLastDownloadDifferenceMillis() > 1800000; // 30 minutes
         // Log.d(TAG, "IsNewActiveSession: " + String.valueOf(IsNewSession));
-        return IsNewSession;
+        return getLastDownloadDifferenceMillis() > 1800000; // 30 minutes
     }
 
     public int getTimezoneMillis() {

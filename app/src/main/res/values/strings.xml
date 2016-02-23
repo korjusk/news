@@ -9,6 +9,13 @@
 
         NB! Direct link\'s will be disabled when using custom source.
     </string>
+    <string name="edit_news_feed_source">Edit news feed source</string>
+    <string name="www.reddit.com">https://www.reddit.com</string>
+    <string name="rss">/.rss</string>
+    <string name="menu_source">Edit source (Advanced)</string>
+    <string name="menu_delete">Delete all data and settings</string>
+    <string name="menu_update">Check for updates</string>
+    <string name="menu_help">Help!</string>
 
     <string-array name="order">
         <item>News - hot and fresh</item>

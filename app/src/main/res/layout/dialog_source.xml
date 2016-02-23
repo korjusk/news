@@ -5,59 +5,59 @@
     android:padding="8dp">
 
     <EditText
+        android:id="@+id/etSource"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etSource"
-        android:layout_below="@+id/etUrl"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/etUrl"
         android:layout_toLeftOf="@+id/etUrlEnd"
         android:layout_toStartOf="@+id/etUrlEnd"
-        android:singleLine="true"
-        android:inputType="textUri"/>
+        android:inputType="textUri"
+        android:singleLine="true" />
 
     <TextView
+        android:id="@+id/etTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit news feed source"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textStyle="bold"
-        android:textSize="20dp"
         android:padding="12dp"
-        android:id="@+id/etTtile" />
+        android:text="@string/edit_news_feed_source"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
+        android:id="@+id/etUrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="https://www.reddit.com"
-        android:layout_below="@+id/etTtile"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textSize="18dp"
-        android:id="@+id/etUrl"
-        android:textColor="#000000" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="/.rss"
-        android:id="@+id/etUrlEnd"
-        android:textSize="18dp"
-        android:layout_alignTop="@+id/etSource"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/etTitle"
+        android:text="@string/www.reddit.com"
         android:textColor="#000000"
-        android:paddingTop="10dp" />
+        android:textSize="18sp" />
 
     <TextView
+        android:id="@+id/etUrlEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sourceSummary"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/etSource"
+        android:paddingTop="10dp"
+        android:text="@string/rss"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <TextView
         android:id="@+id/sourceSummary"
-        android:layout_below="@+id/etSource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/etSource"
         android:layout_alignStart="@+id/etSource"
-        android:layout_marginTop="25dp" />
+        android:layout_below="@+id/etSource"
+        android:layout_marginTop="25dp"
+        android:text="@string/sourceSummary" />
 
 </RelativeLayout>

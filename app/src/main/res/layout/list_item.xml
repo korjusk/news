@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:minHeight="?attr/listPreferredItemHeightSmall"
-    android:paddingBottom="7dp"
-    android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-    android:paddingTop="7dp"
-    android:textAppearance="?attr/textAppearanceListItemSmall"
-    tools:ignore="RtlCompat" />
-    <!--todo tools:ignore="RtlCompat" -->
+    android:padding="6dp"
+    android:textAppearance="?attr/textAppearanceListItemSmall" />

@@ -7,11 +7,12 @@ import java.util.Date;
 // and adds it to there if necessary
 public class AddDataToDatabase {
     private static final String TAG = "u8i9 AddData";
-    private Date listVisitDate;
+    private Date lastVisitDate;
     private boolean sinceLastVisit;
 
-    // OLD: (String content, String code, String link, String published, String title)
-    public AddDataToDatabase(String code, String title, String content, String comments, String published) {
+    public AddDataToDatabase(String code, String title, String content,
+                             String comments, String published) {
+
         MainActivity mainActivity = (MainActivity) MainActivity.getContext();
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(mainActivity);
 
@@ -29,9 +30,9 @@ public class AddDataToDatabase {
                 long diffMinutes = clock.getLastSessionDifferenceMillis() / 60000;
                 //Log.d(TAG, "diff minutes is:: " + String.valueOf(diffMinutes));
 
-                Date current = new Date(listVisitDate.getTime() - clock.getTimezoneMillis());
+                Date current = new Date(lastVisitDate.getTime() - clock.getTimezoneMillis());
 
-                // Its acceptable when news item are published after listVisitDate(Time when user last visited the app)
+                // Its acceptable when news item are published after lastVisitDate(Time when user last visited the app)
                 // OR if difference is 60minutes or smaller. if its below 1 hour then all the past hour news will be acceptable
                 boolean acceptable = item.after(current) || diffMinutes <= 60;
 
@@ -57,7 +58,7 @@ public class AddDataToDatabase {
 
         if (settings.getSpinnerPosition() == 6) {
             sinceLastVisit = true;
-            listVisitDate = settings.getLastSessionTime();
+            lastVisitDate = settings.getLastSessionTime();
 
         } else {
             sinceLastVisit = false;
