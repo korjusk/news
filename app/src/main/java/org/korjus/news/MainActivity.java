@@ -32,8 +32,6 @@ menu
 clean, rename, comment
 public static -> private
 
-minsdk to 10
-
 Test different:
 Timezones
 Locations
@@ -96,7 +94,6 @@ public class MainActivity extends AppCompatActivity {
             settings.deleteAll();
             Spinner spinner = (Spinner) findViewById(R.id.spinner);
             spinner.setSelection(0, false);
-            refresh();
             return true;
         }
 

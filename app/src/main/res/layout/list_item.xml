@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:textAppearance="?android:attr/textAppearanceListItemSmall"
     android:gravity="center_vertical"
-    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+    android:minHeight="?attr/listPreferredItemHeightSmall"
+    android:paddingBottom="7dp"
     android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    tools:ignore="RtlCompat"
+    android:paddingStart="?android:attr/listPreferredItemPaddingStart"
     android:paddingTop="7dp"
-    android:paddingBottom="7dp" />
+    android:textAppearance="?attr/textAppearanceListItemSmall"
+    tools:ignore="RtlCompat" />
     <!--todo tools:ignore="RtlCompat" -->
