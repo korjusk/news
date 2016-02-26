@@ -43,11 +43,14 @@ public class MainFragment extends Fragment {
         return fragment;
     }
 
-    public static void updateAllFragments() {
-        // Update all fragments that are created
-        for (Object value : mapFragments.values()) {
-            MainFragment fragment = (MainFragment) value;
-            fragment.updateUI();
+    public static void updateAllFragments(int pages) {
+        // Update all fragments that are created and will contain data
+        for (int i = 1; i <= pages; i++) {
+            MainFragment fragment = mapFragments.get(i);
+            if (null != fragment) {
+                fragment.updateUI();
+            }
+
         }
     }
 
@@ -141,7 +144,10 @@ public class MainFragment extends Fragment {
 
         dataList.clear();
         dataList.addAll(dbHelper.getNewsTitles(a));
-        itemsAdapter.notifyDataSetChanged();
+
+        synchronized (itemsAdapter) {
+            itemsAdapter.notifyDataSetChanged();
+        }
 
         // Disables pull to refresh icon
         swipeContainer.setRefreshing(false);

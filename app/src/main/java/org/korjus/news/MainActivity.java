@@ -29,7 +29,7 @@ import io.fabric.sdk.android.Fabric;
 5 seconds lag between doInBackground and onPostExecute.
 
 menu
-clean, rename, comment
+comment
 
 Test different:
 Timezones
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
     private static Context context;
     private SectionsPagerAdapter sectionsAdapter;
+    private ViewPager viewPager;
     private UserSettings settings;
     private Clock clock;
 
@@ -55,7 +56,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(new Crashlytics())
+                .debuggable(true)
+                .build();
+        Fabric.with(fabric);
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -190,9 +196,9 @@ public class MainActivity extends AppCompatActivity {
         sectionsAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter and on page change listener.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(sectionsAdapter);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        viewPager = (ViewPager) findViewById(R.id.container);
+        viewPager.setAdapter(sectionsAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
@@ -202,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
                 int i = page * 5 + 1;
                 DatabaseHelper dbHelper = DatabaseHelper.getInstance(context);
                 // Add selected page news ID's to old db
+                // Log.d(TAG, "onPageSelected, adding five news to old " + String.valueOf(i));
                 dbHelper.addFiveNewsToOld(i);
             }
 
@@ -259,5 +266,9 @@ public class MainActivity extends AppCompatActivity {
         sectionsAdapter.setCount(i);
         // Triggers a redraw of the PageAdapter
         sectionsAdapter.notifyDataSetChanged();
+    }
+
+    public void setViewPagerToFirstPage() {
+        viewPager.setCurrentItem(0);
     }
 }

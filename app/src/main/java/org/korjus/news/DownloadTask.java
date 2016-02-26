@@ -26,25 +26,23 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         } catch (IOException | XmlPullParserException e) {
             e.getStackTrace();
         }
-        //Log.d(TAG, "before lag");
+        Log.d(TAG, "before lag");
         return null;
     }
 
     @Override
     protected void onPostExecute(String result) {
-        //Log.d(TAG, "after lag");
+        Log.d(TAG, "after lag");
         MainActivity mainActivity = (MainActivity) MainActivity.getContext();
         DatabaseHelper dbHelper = DatabaseHelper.getInstance(mainActivity);
-        dbHelper.addFiveNewsToOld(1);
 
         long itemsInNewsDb = dbHelper.getNewsSize();
         // Change the pager adapter nr of page count
         int newPageNr = (int) Math.ceil(itemsInNewsDb / 5.0);
         mainActivity.setSectionsAdapterCount(newPageNr);
-        Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " +
-                String.valueOf(dbHelper.getOldSize()) + " in old db.");
+        mainActivity.setViewPagerToFirstPage();
 
-        MainFragment.updateAllFragments();
+        MainFragment.updateAllFragments(newPageNr);
 
         // Download more data if there's below 25 news in db
         if(itemsInNewsDb < 25){
@@ -60,6 +58,7 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             // download more data if the url is new
             if (newUrl.equals(lastUrl)){
                 Log.d(TAG, "Escaped loop");
+                dbHelper.addFiveNewsToOld(1);
 
                 if (itemsInNewsDb < 5) {
                     Toast.makeText(mainActivity, "No more new news...", Toast.LENGTH_LONG).show();
@@ -67,7 +66,12 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
             } else {
                 new DownloadTask().execute(newUrl);
             }
+        } else {
+            // No need to download more news. Adding front page news to old db.
+            dbHelper.addFiveNewsToOld(1);
         }
+        Log.d(TAG, String.valueOf(itemsInNewsDb) + " news in db. " +
+                String.valueOf(dbHelper.getOldSize()) + " in old db.");
     }
 
     // Uploads XML from reddit, parses it, and combines it with
