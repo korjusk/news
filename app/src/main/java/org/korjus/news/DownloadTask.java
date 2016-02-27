@@ -39,6 +39,10 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         long itemsInNewsDb = dbHelper.getNewsSize();
         // Change the pager adapter nr of page count
         int newPageNr = (int) Math.ceil(itemsInNewsDb / 5.0);
+        if (newPageNr < 1) {
+            newPageNr = 1;
+        }
+
         mainActivity.setSectionsAdapterCount(newPageNr);
         mainActivity.setViewPagerToFirstPage();
 

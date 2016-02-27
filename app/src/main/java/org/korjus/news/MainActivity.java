@@ -24,22 +24,19 @@ import com.crashlytics.android.Crashlytics;
 
 import io.fabric.sdk.android.Fabric;
 
-
-/*Todo
-5 seconds lag between doInBackground and onPostExecute.
-
-menu
-comment
+/*
+warn if no internet
+comment and clean code
 
 Test different:
 Timezones
 Locations
 Daylight times
 Android versions
+Internet settings
 
 cd data/data/org.korjus.news/databases
 */
-
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "u8i9 MainActivity";
